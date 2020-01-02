@@ -1,0 +1,24 @@
+server:
+    port: 8080
+    servlet:
+        context-path: /api/
+
+spring:
+    mvc:
+        dispatch-options-request: true
+    data:
+        elasticsearch:
+            cluster-name: elasticsearch
+            cluster-nodes: localhost:9300
+
+elasticsearch:
+    address: ${ELASTICSEARCH_ADDRESS:127.0.0.1}
+    port: ${ELASTICSEARCH_PORT:9300}
+
+logging:
+    level:
+        org:
+        springframework:
+            data:
+                elasticsearch:
+                    core: DEBUG

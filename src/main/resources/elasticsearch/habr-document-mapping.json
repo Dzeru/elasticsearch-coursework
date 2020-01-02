@@ -1,0 +1,14 @@
+{
+  "habr_document": {
+    "properties": {
+      "header": {
+        "type": "text",
+        "analyzer": "habr_document_analyzer"
+      },
+      "body": {
+        "type": "text",
+        "analyzer": "habr_document_analyzer"
+      }
+    }
+  }
+}
