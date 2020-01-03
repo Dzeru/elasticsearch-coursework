@@ -1,6 +1,7 @@
 package com.dzeru.elasticsearchcoursework.services;
 
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
+import com.dzeru.elasticsearchcoursework.processors.pipelines.RussianStemmerPipeline;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,13 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
     private final SimpleDateFormat HABR_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
     private final HabrDocumentRepository habrDocumentRepository;
+    private final RussianStemmerPipeline russianStemmerPipeline;
 
     @Autowired
-    public HabrDocumentExtractorImpl(HabrDocumentRepository habrDocumentRepository) {
+    public HabrDocumentExtractorImpl(HabrDocumentRepository habrDocumentRepository,
+                                     RussianStemmerPipeline russianStemmerPipeline) {
         this.habrDocumentRepository = habrDocumentRepository;
+        this.russianStemmerPipeline = russianStemmerPipeline;
     }
 
     @Override
@@ -51,11 +55,19 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
         String comCount = document.substring(
                 getStartPositionWithOffset(document, COMMENTS_COUNT_START));
         String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
+        System.out.println("--------");
+        System.out.println(header);
+        System.out.println(russianStemmerPipeline.process(header));
+        System.out.println(body);
+        System.out.println(russianStemmerPipeline.process(body));
+        System.out.println("--------");
 
         habrDocumentRepository.save(new HabrDocument(
                 postId,
                 header,
                 body,
+                russianStemmerPipeline.process(header),
+                russianStemmerPipeline.process(body),
                 Integer.parseInt(commentsCount.trim()),
                 HABR_DATE_FORMAT.parse(postTime))
         );
