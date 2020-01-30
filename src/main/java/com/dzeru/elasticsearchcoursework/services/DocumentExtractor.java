@@ -1,5 +1,7 @@
 package com.dzeru.elasticsearchcoursework.services;
 
+import com.dzeru.elasticsearchcoursework.dto.AbstractExtractorParams;
+
 public interface DocumentExtractor {
-    void extractDocument(String[] args) throws Exception;
+    void extractDocument(AbstractExtractorParams abstractExtractorParams) throws Exception;
 }

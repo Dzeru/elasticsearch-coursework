@@ -30,13 +30,6 @@ public class Test {
         return habrDocumentRepository.findAll();
     }
 
-    @GetMapping("/a/{postId}")
-    public int a(@PathVariable("postId") String postId) throws Exception {
-        String[] s = new String[1];
-        s[0] = postId;
-        documentExtractor.extractDocument(s);
-        return 0;
-    }
 
     @GetMapping("/f/{find}")
     public List<HabrDocument> find(@PathVariable("find") String find) {

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PunctuationCleanerProcessor implements StringProcessor {
 
-    private static final String PUNCTUATION_MARKS = "!|\\?|\\.|,|\\(|\\)|\"|:|;|…|—";
+    private static final String PUNCTUATION_MARKS = "!|\\?|\\.|,|\\(|\\)|\"|:|;|…|—|«|»";
 
     public String process(String string) {
         return string.replaceAll(PUNCTUATION_MARKS, " ");
