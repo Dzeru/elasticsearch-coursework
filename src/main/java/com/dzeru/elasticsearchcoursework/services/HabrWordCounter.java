@@ -7,15 +7,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class HabrWordCounter implements WordCounter {
 
-    private Map<String, WordCount> wordCountMap;
+    private Map<String, List<WordCount>> wordCountMap;
 
     @Override
-    public Map<String, WordCount> count(Iterable<? extends AbstractDocument> documents) {
+    public Map<String, List<WordCount>> count(Iterable<? extends AbstractDocument> documents) {
         wordCountMap = new HashMap<>();
         Iterable<HabrDocument> docs = new ArrayList<>();
         try {
@@ -26,8 +27,7 @@ public class HabrWordCounter implements WordCounter {
         }
 
         docs.forEach(habrDocument -> {
-            countWords(habrDocument, habrDocument.getStemmedHeader());
-            countWords(habrDocument, habrDocument.getStemmedBody());
+            countWords(habrDocument, getCountedString(habrDocument));
         });
 
         return wordCountMap;
@@ -35,15 +35,34 @@ public class HabrWordCounter implements WordCounter {
 
     private void countWords(HabrDocument habrDocument, String string) {
         String[] words = string.split(" ");
+        Map<String, WordCount> wordCounts = new HashMap<>();
 
         for(String word : words) {
-            if(wordCountMap.containsKey(word)) {
-                wordCountMap.get(word).setCount(wordCountMap.get(word).getCount() + 1);
-                wordCountMap.get(word).addDate(habrDocument.getPostTime());
+            if(wordCounts.containsKey(word)) {
+                WordCount currentWordCount = wordCounts.get(word);
+                currentWordCount.setCount(currentWordCount.getCount() + 1);
             }
             else {
-                wordCountMap.put(word, new WordCount(word, 1, habrDocument.getPostTime()));
+                wordCounts.put(word, new WordCount(word, 1, habrDocument.getPostTime()));
             }
         }
+
+        for(Map.Entry<String, WordCount> wordCountEntry : wordCounts.entrySet()) {
+            String word = wordCountEntry.getKey();
+            WordCount wordCount = wordCountEntry.getValue();
+
+            if(wordCountMap.containsKey(word)) {
+                wordCountMap.get(word).add(wordCount);
+            }
+            else {
+                List<WordCount> wordCountList = new ArrayList<>();
+                wordCountList.add(wordCount);
+                wordCountMap.put(word, wordCountList);
+            }
+        }
+    }
+
+    private String getCountedString(HabrDocument habrDocument) {
+        return habrDocument.getStemmedHeader() + " " + habrDocument.getStemmedBody();
     }
 }

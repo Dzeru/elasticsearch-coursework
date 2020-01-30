@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface WordCounter {
-    Map<String, WordCount> count(Iterable<? extends AbstractDocument> documents);
+    Map<String, List<WordCount>> count(Iterable<? extends AbstractDocument> documents);
 }

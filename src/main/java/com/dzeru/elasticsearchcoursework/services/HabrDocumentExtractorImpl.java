@@ -1,6 +1,7 @@
 package com.dzeru.elasticsearchcoursework.services;
 
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
+import com.dzeru.elasticsearchcoursework.processors.pipelines.HtmlCleanerPipeline;
 import com.dzeru.elasticsearchcoursework.processors.pipelines.RussianStemmerPipeline;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
@@ -26,12 +27,15 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
 
     private final HabrDocumentRepository habrDocumentRepository;
     private final RussianStemmerPipeline russianStemmerPipeline;
+    private final HtmlCleanerPipeline htmlCleanerPipeline;
 
     @Autowired
     public HabrDocumentExtractorImpl(HabrDocumentRepository habrDocumentRepository,
-                                     RussianStemmerPipeline russianStemmerPipeline) {
+                                     RussianStemmerPipeline russianStemmerPipeline,
+                                     HtmlCleanerPipeline htmlCleanerPipeline) {
         this.habrDocumentRepository = habrDocumentRepository;
         this.russianStemmerPipeline = russianStemmerPipeline;
+        this.htmlCleanerPipeline = htmlCleanerPipeline;
     }
 
     @Override
@@ -56,16 +60,16 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
                 getStartPositionWithOffset(document, COMMENTS_COUNT_START));
         String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
         System.out.println("--------");
-        System.out.println(header);
+        System.out.println(htmlCleanerPipeline.process(header));
         System.out.println(russianStemmerPipeline.process(header));
-        System.out.println(body);
+        System.out.println(htmlCleanerPipeline.process(body));
         System.out.println(russianStemmerPipeline.process(body));
         System.out.println("--------");
 
         habrDocumentRepository.save(new HabrDocument(
                 postId,
-                header,
-                body,
+                htmlCleanerPipeline.process(header),
+                htmlCleanerPipeline.process(body),
                 russianStemmerPipeline.process(header),
                 russianStemmerPipeline.process(body),
                 Integer.parseInt(commentsCount.trim()),
