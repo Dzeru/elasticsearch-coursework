@@ -1,0 +1,18 @@
+.header {
+    background: orange;
+    color: white;
+    height: 6vmin;
+}
+
+.logo {
+    font-size: 4vmin;
+    font-weight: bold;
+    padding-left: 4vmax;
+    padding-right: 30vmax;
+}
+
+.nav-el {
+    font-size: 4vmin;
+    font-weight: normal;
+    padding-left: 4vmax;
+}
