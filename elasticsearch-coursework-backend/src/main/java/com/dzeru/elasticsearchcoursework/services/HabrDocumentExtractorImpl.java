@@ -15,17 +15,19 @@ import java.text.SimpleDateFormat;
 @Service
 public class HabrDocumentExtractorImpl implements DocumentExtractor {
 
-    private final String HEADER_START = "<span class=\"post__title-text\">";
-    private final String HEADER_END = "</h1>";
-    private final String POST_TIME_START = "<span class=\"post__time\" data-time_published=\"";
-    private final String POST_TIME_END = "Z\">";
-    private final String BODY_START = "<div class=\"post__body post__body_full\">";
-    private final String BODY_END = "<dl class=\"post__tags\">";
-    private final String COMMENTS_COUNT_START = "<span class=\"comments-section__head-counter\" id=\"comments_count\">";
-    private final String COMMENTS_COUNT_END = "</span>";
+    private static final String HEADER_START = "<span class=\"post__title-text\">";
+    private static final String HEADER_END = "</h1>";
+    private static final String POST_TIME_START = "<span class=\"post__time\" data-time_published=\"";
+    private static final String POST_TIME_END = "Z\">";
+    private static final String BODY_START = "<div class=\"post__body post__body_full\">";
+    private static final String BODY_END = "<dl class=\"post__tags\">";
+    private static final String COMMENTS_COUNT_START = "<span class=\"comments-section__head-counter\" id=\"comments_count\">";
+    private static final String COMMENTS_COUNT_END = "</span>";
 
-    private final String HABR_URL_POST= "https://habr.com/ru/post/";
-    private final SimpleDateFormat HABR_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+    private static final String HABR_URL_POST= "https://habr.com/ru/post/";
+
+    private static final SimpleDateFormat HABR_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+    private static final SimpleDateFormat CUSTOM_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     private final HabrDocumentRepository habrDocumentRepository;
     private final RussianStemmerPipeline russianStemmerPipeline;
@@ -72,6 +74,7 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
             System.out.println(htmlCleanerPipeline.process(body));
             System.out.println(russianStemmerPipeline.process(body));
             System.out.println(commentsCount);
+            System.out.println(CUSTOM_DATE_FORMAT.parse(postTime));
             System.out.println("--------");
 
             habrDocumentRepository.save(new HabrDocument(
@@ -81,7 +84,7 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
                     russianStemmerPipeline.process(header),
                     russianStemmerPipeline.process(body),
                     Integer.parseInt(commentsCount.trim()),
-                    HABR_DATE_FORMAT.parse(postTime))
+                    CUSTOM_DATE_FORMAT.parse(postTime))
             );
         }
     }
