@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 public class HabrDocumentExtractorImpl implements DocumentExtractor {
@@ -46,7 +47,7 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
     public void extractDocument(AbstractExtractorParams abstractExtractorParams) throws Exception {
         HabrExtractorParams habrExtractorParams = (HabrExtractorParams) abstractExtractorParams;
 
-        String[] postIds = habrExtractorParams.getPostIds();
+        List<String> postIds = habrExtractorParams.getPostIds();
 
         for(String postIdString : postIds) {
             final long postId = Long.parseLong(postIdString);
@@ -72,6 +73,7 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
             System.out.println(htmlCleanerPipeline.process(header));
             System.out.println(russianStemmerPipeline.process(header));
             System.out.println(htmlCleanerPipeline.process(body));
+            System.out.println(russianStemmerPipeline.process1(body));
             System.out.println(russianStemmerPipeline.process(body));
             System.out.println(commentsCount);
             System.out.println(CUSTOM_DATE_FORMAT.parse(postTime));

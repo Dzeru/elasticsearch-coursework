@@ -12,4 +12,8 @@ public interface HabrDocumentRepository extends ElasticsearchRepository<HabrDocu
 
     @Query("{\"multi_match\":{ \"query\":\"?0\",\"fields\":[\"header^3\",\"body\"]}}")
     List<HabrDocument> test(String find);
+
+    //TODO: fuzzy, autocomplete (?)
+    @Query("{\"multi_match\":{ \"query\":\"?0\",\"fields\":[\"header^3\",\"body\"]}}")
+    List<HabrDocument> findByWord(String word);
 }

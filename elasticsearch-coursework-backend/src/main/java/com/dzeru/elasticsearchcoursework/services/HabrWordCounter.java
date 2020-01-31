@@ -16,7 +16,7 @@ public class HabrWordCounter implements WordCounter {
     private Map<String, List<WordCount>> wordCountMap;
 
     @Override
-    public Map<String, List<WordCount>> count(Iterable<? extends AbstractDocument> documents) {
+    public Map<String, List<WordCount>> countAllWords(Iterable<? extends AbstractDocument> documents) {
         wordCountMap = new HashMap<>();
         Iterable<HabrDocument> docs = new ArrayList<>();
         try {
@@ -27,13 +27,35 @@ public class HabrWordCounter implements WordCounter {
         }
 
         docs.forEach(habrDocument -> {
-            countWords(habrDocument, getCountedString(habrDocument));
+            countWordsAll(habrDocument, getCountedString(habrDocument));
         });
 
         return wordCountMap;
     }
 
-    private void countWords(HabrDocument habrDocument, String string) {
+    @Override
+    public List<WordCount> countByWord(String word, Iterable<? extends AbstractDocument> documents) {
+        List<WordCount> wordCountList = new ArrayList<>();
+        Iterable<HabrDocument> docs = new ArrayList<>();
+        try {
+            docs = (Iterable<HabrDocument>) documents;
+        }
+        catch(ClassCastException e) {
+            e.printStackTrace();
+        }
+
+        docs.forEach(habrDocument -> {
+            WordCount wordCount = countWordsOneWord(habrDocument, getCountedString(habrDocument), word);
+
+            if(wordCount.getCount() > 0) {
+                wordCountList.add(wordCount);
+            }
+        });
+
+        return wordCountList;
+    }
+
+    private void countWordsAll(HabrDocument habrDocument, String string) {
         String[] words = string.split(" ");
         Map<String, WordCount> wordCounts = new HashMap<>();
 
@@ -60,6 +82,19 @@ public class HabrWordCounter implements WordCounter {
                 wordCountMap.put(word, wordCountList);
             }
         }
+    }
+
+    private WordCount countWordsOneWord(HabrDocument habrDocument, String string, String countWord) {
+        String[] words = string.split(" ");
+        WordCount wordCount = new WordCount(countWord, 0, habrDocument.getPostTime());
+
+        for(String word : words) {
+            if(word.equalsIgnoreCase(countWord)) {
+                wordCount.setCount(wordCount.getCount() + 1);
+            }
+        }
+
+        return wordCount;
     }
 
     private String getCountedString(HabrDocument habrDocument) {

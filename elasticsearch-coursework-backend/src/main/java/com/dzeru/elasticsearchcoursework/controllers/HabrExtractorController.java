@@ -5,6 +5,10 @@ import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @RequestMapping("/extract")
 @RestController
 public class HabrExtractorController {
@@ -17,10 +21,28 @@ public class HabrExtractorController {
     }
 
     @GetMapping("/habr")
-    public int a(@RequestParam("postIds") String postIds) throws Exception {
+    public void a(@RequestParam("postIds") String postIds) throws Exception {
         HabrExtractorParams params = new HabrExtractorParams();
-        params.setPostIds(postIds.split(","));
+
+        if(postIds.contains(",")) {
+            params.setPostIds(Arrays.asList(postIds.split(",")));
+        }
+        else if(postIds.contains("-")){
+            List<String> idsList = new ArrayList<>();
+            String[] ids = postIds.split("-");
+            int firstId = Integer.parseInt(ids[0]);
+            int secondId = Integer.parseInt(ids[1]);
+            int beginId = Math.min(firstId, secondId);
+            int endId = Math.max(firstId, secondId);
+
+            idsList.add(ids[0]);
+            for(int id = beginId + 1; id < endId; id++) {
+                idsList.add(String.valueOf(id));
+            }
+            idsList.add(ids[1]);
+            params.setPostIds(idsList);
+        }
+
         documentExtractor.extractDocument(params);
-        return 0;
     }
 }

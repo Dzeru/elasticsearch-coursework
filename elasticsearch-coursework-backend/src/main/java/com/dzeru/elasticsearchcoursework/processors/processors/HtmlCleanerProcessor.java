@@ -8,6 +8,7 @@ public class HtmlCleanerProcessor implements StringProcessor {
 
     private static final String HTML_TAG = "<[^>]*>";
 
+    @Override
     public String process(String string) {
         return string.replaceAll(HTML_TAG, " ");
     }

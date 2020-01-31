@@ -8,6 +8,7 @@ import com.dzeru.elasticsearchcoursework.services.WordCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -38,6 +39,11 @@ public class Test {
 
     @GetMapping("/c")
     public Map<String, List<WordCount>> count() {
-        return wordCounter.count(habrDocumentRepository.findAll());
+        return wordCounter.countAllWords(habrDocumentRepository.findAll());
+    }
+
+    @GetMapping("/co")
+    public List<WordCount> countOne(@RequestParam("word") String word) {
+        return wordCounter.countByWord(word, habrDocumentRepository.findAll());
     }
 }
