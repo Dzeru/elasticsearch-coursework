@@ -1,8 +1,7 @@
-import React from 'react';
-import logo from './logo.svg';
+import React from 'react'
+import logo from './logo.svg'
 import './App.css';
 import Header from './Header.js'
-import Chart from './Chart.js'
 
 class App extends React.Component {
 
@@ -13,11 +12,8 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <Header></Header>
-                <div>Hello world!</div>
-                <Chart/>
+                <Header/>
             </div>
-
         );
     }
 }

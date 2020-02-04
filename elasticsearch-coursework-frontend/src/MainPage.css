@@ -365,34 +365,17 @@ textarea {
     padding: 0.2em 0;
 }
 
-.nav {
-    background: orange;
-    color: white;
-    height: 7vmin;
-}
-
-.nav li {
-    margin: 0.5vmin 4vmin 1vmin 0;
-    list-style: none;
-    display: inline-block;
-    font-size: 4vmin;
-    font-weight: normal;
-    padding-left: 4vmax;
+.container {
+    padding: 5vmin 3vmax;
     font-family: Helvetica, sans-serif;
+    text-align: center;
 }
 
-.nav a {
-    color: white;
-    text-decoration: none;
+h1 {
+    font-size: 3vmax;
+    padding: 1vmin 1vmin;
 }
 
-.nav a:hover {
-    color: grey;
-}
-
-.logo {
-    font-size: 4vmin;
-    font-weight: bold;
-    padding-left: 4vmax;
-    padding-right: 30vmax;
+li {
+    line-height: 1.5;
 }
