@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Chart from './Chart.js'
 import MainPage from './MainPage.js'
+import Extractor from './Extractor.js'
 
 class Header extends React.Component {
     constructor() {
@@ -39,7 +40,7 @@ class Header extends React.Component {
                     <Chart />
                   </Route>
                   <Route path="/extract">
-                    <MainPage />
+                    <Extractor />
                   </Route>
                   <Route path="/">
                     <MainPage />
