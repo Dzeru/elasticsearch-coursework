@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import axios from 'axios';
 
 class Extractor extends React.Component {
     constructor(props) {
@@ -15,8 +16,14 @@ class Extractor extends React.Component {
     }
 
     handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.habrIds);
         event.preventDefault();
+        const url = 'http://localhost:8080/api/extract/habr?' + 'postIds=' + this.state.habrIds;
+
+        axios.get(url)
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+            })
     }
 
     render() {
