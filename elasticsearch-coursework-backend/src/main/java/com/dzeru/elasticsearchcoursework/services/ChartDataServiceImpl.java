@@ -1,5 +1,6 @@
 package com.dzeru.elasticsearchcoursework.services;
 
+import com.dzeru.elasticsearchcoursework.dto.DocumentWordCount;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
@@ -29,6 +30,16 @@ public class ChartDataServiceImpl {
                 return habrWordCounter.countByWord(word, documents);
             }
             default: return Collections.emptyList();
+        }
+    }
+
+    public DocumentWordCount getDataByDocument(String word, String documentType) {
+        switch(documentType) {
+            case "habr": {
+                List<HabrDocument> documents = habrDocumentRepository.findByWord(word);
+                return habrWordCounter.countWordByDocument(word, documents);
+            }
+            default: return new DocumentWordCount(word);
         }
     }
 }

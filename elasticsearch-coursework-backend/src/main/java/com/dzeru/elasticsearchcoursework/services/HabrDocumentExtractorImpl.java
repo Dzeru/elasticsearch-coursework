@@ -73,7 +73,6 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
             System.out.println(htmlCleanerPipeline.process(header));
             System.out.println(russianStemmerPipeline.process(header));
             System.out.println(htmlCleanerPipeline.process(body));
-            System.out.println(russianStemmerPipeline.process1(body));
             System.out.println(russianStemmerPipeline.process(body));
             System.out.println(commentsCount);
             System.out.println(CUSTOM_DATE_FORMAT.parse(postTime));

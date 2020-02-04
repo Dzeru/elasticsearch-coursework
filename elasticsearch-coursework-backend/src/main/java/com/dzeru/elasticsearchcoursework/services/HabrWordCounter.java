@@ -1,5 +1,6 @@
 package com.dzeru.elasticsearchcoursework.services;
 
+import com.dzeru.elasticsearchcoursework.dto.DocumentWordCount;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.AbstractDocument;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
@@ -53,6 +54,26 @@ public class HabrWordCounter implements WordCounter {
         });
 
         return wordCountList;
+    }
+
+    @Override
+    public DocumentWordCount countWordByDocument(String word,
+                                                 Iterable<? extends AbstractDocument> documents) {
+        DocumentWordCount documentWordCount = new DocumentWordCount(word);
+
+        Iterable<HabrDocument> docs = new ArrayList<>();
+        try {
+            docs = (Iterable<HabrDocument>) documents;
+        }
+        catch(ClassCastException e) {
+            e.printStackTrace();
+        }
+
+        docs.forEach(habrDocument -> {
+                documentWordCount.addDocumentCount(habrDocument.getPostTime());
+        });
+
+        return documentWordCount.build();
     }
 
     private void countWordsAll(HabrDocument habrDocument, String string) {
