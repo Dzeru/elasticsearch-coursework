@@ -10,10 +10,6 @@ import java.util.List;
 @Repository
 public interface HabrDocumentRepository extends ElasticsearchRepository<HabrDocument, Long> {
 
-    @Query("{\"multi_match\":{ \"query\":\"?0\",\"fields\":[\"header^3\",\"body\"]}}")
-    List<HabrDocument> test(String find);
-
-    //TODO: fuzzy, autocomplete (?)
-    @Query("{\"multi_match\":{ \"query\":\"?0\",\"fields\":[\"header^3\",\"body\"]}}")
-    List<HabrDocument> findByWord(String word);
+    @Query("{\"multi_match\":{\"query\":\"?0\",\"fields\":[\"header\",\"body\"]}}")
+    List<HabrDocument> findByWord(String find);
 }

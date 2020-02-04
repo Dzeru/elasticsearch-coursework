@@ -8,12 +8,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RequestMapping("/extract")
 @RestController
 public class HabrExtractorController {
 
     private final DocumentExtractor documentExtractor;
+
+    private static final Pattern numberPattern = Pattern.compile("^\\d*$");
 
     @Autowired
     public HabrExtractorController(DocumentExtractor documentExtractor) {
@@ -40,6 +44,11 @@ public class HabrExtractorController {
                 idsList.add(String.valueOf(id));
             }
             idsList.add(ids[1]);
+            params.setPostIds(idsList);
+        }
+        else if(numberPattern.matcher(postIds).matches()) {
+            List<String> idsList = new ArrayList<>();
+            idsList.add(postIds);
             params.setPostIds(idsList);
         }
 

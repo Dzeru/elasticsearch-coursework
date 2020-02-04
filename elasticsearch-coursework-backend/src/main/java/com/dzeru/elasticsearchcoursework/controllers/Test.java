@@ -2,6 +2,7 @@ package com.dzeru.elasticsearchcoursework.controllers;
 
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
+import com.dzeru.elasticsearchcoursework.processors.processors.WhitespaceProcessor;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
 import com.dzeru.elasticsearchcoursework.services.WordCounter;
@@ -26,6 +27,9 @@ public class Test {
     @Autowired
     private WordCounter wordCounter;
 
+    @Autowired
+    private WhitespaceProcessor whitespaceProcessor;
+
     @GetMapping("/t")
     public Iterable<HabrDocument> b() {
         return habrDocumentRepository.findAll();
@@ -34,7 +38,7 @@ public class Test {
 
     @GetMapping("/f/{find}")
     public List<HabrDocument> find(@PathVariable("find") String find) {
-        return habrDocumentRepository.test(find);
+        return habrDocumentRepository.findByWord(find);
     }
 
     @GetMapping("/c")
