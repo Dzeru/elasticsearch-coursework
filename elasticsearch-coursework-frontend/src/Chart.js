@@ -39,9 +39,14 @@ class Chart extends React.Component {
 
     render() {
         return (
-          <div className="container">
-            <Line data={this.state.data} />
-          </div>
+            <div>
+              <div className="container w60 fl">
+                <Line data={this.state.data} />
+              </div>
+              <div className="container w30 fr">
+                <h1>Buttons Inputs Buttons</h1>
+              </div>
+            </div>
         );
     }
 }
