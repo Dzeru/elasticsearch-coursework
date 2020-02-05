@@ -23,6 +23,7 @@ class Extractor extends React.Component {
             .then(res => {
                 console.log(res);
                 console.log(res.data);
+                alert('Обработано документов: ' + res.data);
             })
     }
 
