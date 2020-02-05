@@ -9,7 +9,7 @@ class MainPage extends React.Component {
 
     render() {
         return (
-        <div className="main">
+        <div className="main-container">
             <h1>Курсовая работа</h1>
             <ul>
                 <li>Выгрузка статей с сайта habr.com</li>

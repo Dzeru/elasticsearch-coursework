@@ -1,0 +1,8 @@
+.ex-ul {
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+.extractor-container {
+    padding: 1vmin 5vmin;
+}
