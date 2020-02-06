@@ -1,7 +1,7 @@
-mvnw
-mvnw.cmd
-.mvn/**
-target/
+elasticsearch-coursework-backend/mvnw
+elasticsearch-coursework-backend/mvnw.cmd
+elasticsearch-coursework-backend/.mvn/**
+elasticsearch-coursework-backend/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
@@ -17,9 +17,10 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
-*.iws
-*.iml
-*.ipr
+elasticsearch-coursework-backend/.idea
+elasticsearch-coursework-backend/*.iws
+elasticsearch-coursework-backend/*.iml
+elasticsearch-coursework-backend/*.ipr
 
 ### NetBeans ###
 /nbproject/private/

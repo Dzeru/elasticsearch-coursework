@@ -1,0 +1,31 @@
+.nav {
+    background: orange;
+    color: white;
+    height: 7vmin;
+}
+
+.nav li {
+    margin: 0.5vmin 4vmin 1vmin 0;
+    list-style: none;
+    display: inline-block;
+    font-size: 4vmin;
+    font-weight: normal;
+    padding-left: 4vmax;
+    font-family: Helvetica, sans-serif;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav a:hover {
+    color: #660000;
+}
+
+.logo {
+    font-size: 4vmin;
+    font-weight: bold;
+    padding-left: 4vmax;
+    padding-right: 30vmax;
+}

@@ -1,0 +1,21 @@
+.container {
+    margin: 3vh 2vw;
+    display: inline-block;
+    border: solid 1px grey;
+}
+
+.w60 {
+    width: 60%;
+}
+
+.w30 {
+    width: 30%;
+}
+
+.fr {
+    float: right;
+}
+
+.fl {
+    float: left;
+}
