@@ -6,11 +6,12 @@ import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.processors.pipelines.HtmlCleanerPipeline;
 import com.dzeru.elasticsearchcoursework.processors.pipelines.RussianStemmerPipeline;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
+import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -26,9 +27,6 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
     private static final String COMMENTS_COUNT_END = "</span>";
 
     private static final String HABR_URL_POST= "https://habr.com/ru/post/";
-
-    private static final SimpleDateFormat HABR_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-    private static final SimpleDateFormat CUSTOM_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     private final HabrDocumentRepository habrDocumentRepository;
     private final RussianStemmerPipeline russianStemmerPipeline;
@@ -53,40 +51,42 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
             final long postId = Long.parseLong(postIdString);
             String document = DocumentDownloader.downloadDocument(HABR_URL_POST + postId);
 
-            String header = document.substring(
-                    getStartPositionWithOffset(document, HEADER_START),
-                    document.indexOf(HEADER_END)
-            );
-            String postTime = document.substring(
-                    getStartPositionWithOffset(document, POST_TIME_START),
-                    document.indexOf(POST_TIME_END) + 1
-            );
-            String body = document.substring(
-                    getStartPositionWithOffset(document, BODY_START),
-                    document.indexOf(BODY_END)
-            );
+            if(!StringUtils.isEmpty(document)) {
+                String header = document.substring(
+                        getStartPositionWithOffset(document, HEADER_START),
+                        document.indexOf(HEADER_END)
+                );
+                String postTime = document.substring(
+                        getStartPositionWithOffset(document, POST_TIME_START),
+                        document.indexOf(POST_TIME_END) + 1
+                );
+                String body = document.substring(
+                        getStartPositionWithOffset(document, BODY_START),
+                        document.indexOf(BODY_END)
+                );
 
-            String comCount = document.substring(
-                    getStartPositionWithOffset(document, COMMENTS_COUNT_START));
-            String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
-            System.out.println("--------");
-            System.out.println(htmlCleanerPipeline.process(header));
-            System.out.println(russianStemmerPipeline.process(header));
-            System.out.println(htmlCleanerPipeline.process(body));
-            System.out.println(russianStemmerPipeline.process(body));
-            System.out.println(commentsCount);
-            System.out.println(CUSTOM_DATE_FORMAT.parse(postTime));
-            System.out.println("--------");
+                String comCount = document.substring(
+                        getStartPositionWithOffset(document, COMMENTS_COUNT_START));
+                String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
+                System.out.println("--------");
+                System.out.println(htmlCleanerPipeline.process(header));
+                System.out.println(russianStemmerPipeline.process(header));
+                System.out.println(htmlCleanerPipeline.process(body));
+                System.out.println(russianStemmerPipeline.process(body));
+                System.out.println(commentsCount);
+                System.out.println(DateFormats.CUSTOM_DATE_FORMAT.parse(postTime));
+                System.out.println("--------");
 
-            habrDocumentRepository.save(new HabrDocument(
-                    postId,
-                    htmlCleanerPipeline.process(header),
-                    htmlCleanerPipeline.process(body),
-                    russianStemmerPipeline.process(header),
-                    russianStemmerPipeline.process(body),
-                    Integer.parseInt(commentsCount.trim()),
-                    CUSTOM_DATE_FORMAT.parse(postTime))
-            );
+                habrDocumentRepository.save(new HabrDocument(
+                        postId,
+                        htmlCleanerPipeline.process(header),
+                        htmlCleanerPipeline.process(body),
+                        russianStemmerPipeline.process(header),
+                        russianStemmerPipeline.process(body),
+                        Integer.parseInt(commentsCount.trim()),
+                        DateFormats.CUSTOM_DATE_FORMAT.parse(postTime))
+                );
+            }
         }
     }
 

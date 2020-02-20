@@ -4,6 +4,7 @@ import com.dzeru.elasticsearchcoursework.dto.DocumentWordCount;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.AbstractDocument;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
+import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +17,12 @@ public class HabrWordCounter implements WordCounter {
 
     private Map<String, List<WordCount>> wordCountMap;
 
+    /*
+    Count all words in documents
+     */
     @Override
-    public Map<String, List<WordCount>> countAllWords(Iterable<? extends AbstractDocument> documents) {
+    public Map<String, List<WordCount>> countAllWords(Iterable<? extends AbstractDocument> documents,
+                                                      CountMode countMode) {
         wordCountMap = new HashMap<>();
         Iterable<HabrDocument> docs = new ArrayList<>();
         try {
@@ -28,14 +33,19 @@ public class HabrWordCounter implements WordCounter {
         }
 
         docs.forEach(habrDocument -> {
-            countWordsAll(habrDocument, getCountedString(habrDocument));
+            countWordsAll(habrDocument, getCountedString(habrDocument, countMode));
         });
 
         return wordCountMap;
     }
 
+    /*
+    Count one word in documents
+     */
     @Override
-    public List<WordCount> countByWord(String word, Iterable<? extends AbstractDocument> documents) {
+    public List<WordCount> countByWord(String word,
+                                       Iterable<? extends AbstractDocument> documents,
+                                       CountMode countMode) {
         List<WordCount> wordCountList = new ArrayList<>();
         Iterable<HabrDocument> docs = new ArrayList<>();
         try {
@@ -46,7 +56,11 @@ public class HabrWordCounter implements WordCounter {
         }
 
         docs.forEach(habrDocument -> {
-            WordCount wordCount = countWordsOneWord(habrDocument, getCountedString(habrDocument), word);
+            WordCount wordCount = countWordsOneWord(
+                    habrDocument,
+                    getCountedString(habrDocument, countMode),
+                    word
+            );
 
             if(wordCount.getCount() > 0) {
                 wordCountList.add(wordCount);
@@ -56,6 +70,9 @@ public class HabrWordCounter implements WordCounter {
         return wordCountList;
     }
 
+    /*
+    Count how many documents contains the word
+     */
     @Override
     public DocumentWordCount countWordByDocument(String word,
                                                  Iterable<? extends AbstractDocument> documents) {
@@ -118,7 +135,16 @@ public class HabrWordCounter implements WordCounter {
         return wordCount;
     }
 
-    private String getCountedString(HabrDocument habrDocument) {
-        return habrDocument.getStemmedHeader() + " " + habrDocument.getStemmedBody();
+    private String getCountedString(HabrDocument habrDocument, CountMode countMode) {
+        switch(countMode) {
+            case ALL:
+                return habrDocument.getStemmedHeader() + " " + habrDocument.getStemmedBody();
+            case ONLY_BODY:
+                return habrDocument.getStemmedBody();
+            case ONLY_HEADER:
+                return habrDocument.getStemmedHeader();
+            default:
+                return habrDocument.getStemmedHeader() + " " + habrDocument.getStemmedBody();
+        }
     }
 }

@@ -3,3 +3,26 @@ body {
     line-height: 1.5;
     color: #660000;
 }
+
+.button-light {
+    background: #fff6e3;
+    color: orange;
+    border: 1px solid orange;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+}
+
+.button-light:hover {
+    color: #660000;
+    border: 1px solid #660000;
+}
+
+.input-light {
+    border-radius: 5px;
+    border: 1px solid orange;
+    padding: 1vh 1vw;
+}
+
+.settings-element {
+    margin: 1vh 1vw;
+}

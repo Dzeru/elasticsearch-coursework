@@ -4,6 +4,7 @@ import com.dzeru.elasticsearchcoursework.dto.DocumentWordCount;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
+import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,11 @@ public class ChartDataServiceImpl {
         this.habrDocumentRepository = habrDocumentRepository;
     }
 
-    public List<WordCount> getDataByWord(String word, String documentType) {
+    public List<WordCount> getDataByWord(String word, String documentType, CountMode countMode) {
         switch(documentType) {
             case "habr": {
                 List<HabrDocument> documents = habrDocumentRepository.findByWord(word);
-                return habrWordCounter.countByWord(word, documents);
+                return habrWordCounter.countByWord(word, documents, countMode);
             }
             default: return Collections.emptyList();
         }

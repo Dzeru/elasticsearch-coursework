@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {Line} from 'react-chartjs-2';
 import "./Chart.css"
 
@@ -6,13 +7,15 @@ class Chart extends React.Component {
 
     constructor(props) {
         super(props)
+
         this.state = {
+            word: '',
             data:
             {
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+              labels: [],
               datasets: [
                 {
-                  label: 'My First dataset',
+                  label: '',
                   fill: false,
                   lineTension: 0.1,
                   backgroundColor: 'rgba(75,192,192,0.4)',
@@ -30,11 +33,28 @@ class Chart extends React.Component {
                   pointHoverBorderWidth: 2,
                   pointRadius: 1,
                   pointHitRadius: 10,
-                  data: [65, 59, 80, 81, 56, 55, 40]
+                  data: []
                 }
               ]
             }
         };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+        this.setState({word: event.target.value})
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        const url = 'http://localhost:8080/api/chart/test?word=' + this.state.word;
+
+        axios.get(url)
+            .then(res => {
+                this.setState({data: res.data})
+            })
     }
 
     render() {
@@ -44,7 +64,10 @@ class Chart extends React.Component {
                 <Line data={this.state.data} />
               </div>
               <div className="container w30 fr">
-                <h1>Buttons Inputs Buttons</h1>
+                <form onSubmit={this.handleSubmit}>
+                    <input className="settings-element input-light" type="text" value={this.state.word} onChange={this.handleChange}/>
+                    <button className="settings-element button-light" type="submit">Построить график</button>
+                </form>
               </div>
             </div>
         );

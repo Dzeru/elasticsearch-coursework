@@ -6,6 +6,7 @@ import com.dzeru.elasticsearchcoursework.processors.processors.WhitespaceProcess
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
 import com.dzeru.elasticsearchcoursework.services.WordCounter;
+import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,11 +44,11 @@ public class Test {
 
     @GetMapping("/c")
     public Map<String, List<WordCount>> count() {
-        return wordCounter.countAllWords(habrDocumentRepository.findAll());
+        return wordCounter.countAllWords(habrDocumentRepository.findAll(), CountMode.ALL);
     }
 
     @GetMapping("/co")
     public List<WordCount> countOne(@RequestParam("word") String word) {
-        return wordCounter.countByWord(word, habrDocumentRepository.findAll());
+        return wordCounter.countByWord(word, habrDocumentRepository.findAll(), CountMode.ALL);
     }
 }

@@ -39,8 +39,8 @@ class Extractor extends React.Component {
                         </ul>
 
                     <form onSubmit={this.handleSubmit}>
-                        <input type="text" value={this.state.habrIds} onChange={this.handleChange}/>
-                        <button type="submit">Выгрузить</button>
+                        <input className="settings-element input-light" type="text" value={this.state.habrIds} onChange={this.handleChange}/>
+                        <button className="settings-element button-light" type="submit">Выгрузить</button>
                     </form>
                 </div>
             </div>

@@ -40,17 +40,4 @@ public class DocumentWordCount {
 
         return this;
     }
-
-    @Data
-    @NoArgsConstructor
-    private class DocumentWordCountEntry {
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-        private Date date;
-        private Integer count;
-
-        DocumentWordCountEntry(Date date, Integer count) {
-            this.date = date;
-            this.count = count;
-        }
-    }
 }
