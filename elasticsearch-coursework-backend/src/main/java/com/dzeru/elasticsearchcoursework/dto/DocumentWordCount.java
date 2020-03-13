@@ -1,14 +1,11 @@
 package com.dzeru.elasticsearchcoursework.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.*;
 
 @Data
-@NoArgsConstructor
 public class DocumentWordCount {
     private String word;
     private List<DocumentWordCountEntry> counts;
@@ -16,9 +13,13 @@ public class DocumentWordCount {
     @JsonIgnore
     private Map<Date, Integer> documentsCountByDate;
 
+    public DocumentWordCount() {
+        documentsCountByDate = new TreeMap<>();
+    }
+
     public DocumentWordCount(String word) {
         this.word = word;
-        documentsCountByDate = new HashMap<>();
+        documentsCountByDate = new TreeMap<>();
     }
 
     public void addDocumentCount(Date date) {

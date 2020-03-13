@@ -49,7 +49,7 @@ class Chart extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const url = 'http://localhost:8080/api/chart/test?word=' + this.state.word;
+        const url = 'http://localhost:8080/api/chart/test2?words=' + this.state.word;
 
         axios.get(url)
             .then(res => {
@@ -65,7 +65,16 @@ class Chart extends React.Component {
               </div>
               <div className="container w30 fr">
                 <form onSubmit={this.handleSubmit}>
-                    <input className="settings-element input-light" type="text" value={this.state.word} onChange={this.handleChange}/>
+                    <input className="settings-element input-light" type="text" placeholder="Слово для поиска" value={this.state.word} onChange={this.handleChange}/>
+                    <div>
+                        <p><input type="radio" name="stemmerType" value="Elasticsearch"/>Elasticsearch</p>
+                        <p><input type="radio" name="stemmerType" value="Porter"/>Стеммер Портера</p>
+                    </div>
+                    <div>
+                        <p>Подсчитывать количество вхождений слова в документе?</p>
+                        <p><input type="radio" name="countWordInDocument" value="1"/>Да</p>
+                        <p><input type="radio" name="countWordInDocument" value="0"/>Нет</p>
+                    </div>
                     <button className="settings-element button-light" type="submit">Построить график</button>
                 </form>
               </div>

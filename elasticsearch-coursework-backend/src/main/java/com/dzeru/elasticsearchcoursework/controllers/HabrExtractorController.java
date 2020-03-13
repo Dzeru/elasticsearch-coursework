@@ -29,7 +29,7 @@ public class HabrExtractorController {
     }
 
     @GetMapping("/habr")
-    public ResponseEntity<Integer> habr(@RequestParam("postIds") String postIds) throws Exception {
+    public ResponseEntity<String> habr(@RequestParam("postIds") String postIds) throws Exception {
         HabrExtractorParams params = new HabrExtractorParams();
 
         if(postIds.contains(",")) {
@@ -56,7 +56,8 @@ public class HabrExtractorController {
             params.setPostIds(idsList);
         }
 
-        documentExtractor.extractDocument(params);
-        return new ResponseEntity<>(params.getPostIds().size(), HttpStatus.OK);
+        int extractedCounter = documentExtractor.extractDocument(params);
+        String documentCount = extractedCounter + "/" + params.getPostIds().size();
+        return new ResponseEntity<>(documentCount, HttpStatus.OK);
     }
 }

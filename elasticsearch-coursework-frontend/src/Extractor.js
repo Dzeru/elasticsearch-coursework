@@ -22,7 +22,7 @@ class Extractor extends React.Component {
 
         axios.get(url)
             .then(res => {
-                alert('Обработано документов: ' + res.data);
+                alert('Обработано документов: ' + res.data + '\nНекоторые документы могли быть недоступны или удалены.');
             })
     }
 

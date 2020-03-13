@@ -8,8 +8,8 @@ import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ChartDataServiceImpl {
@@ -34,13 +34,18 @@ public class ChartDataServiceImpl {
         }
     }
 
-    public DocumentWordCount getDataByDocument(String word, String documentType) {
+    public List<DocumentWordCount> getDataByDocument(List<String> words, String documentType) {
         switch(documentType) {
             case "habr": {
-                List<HabrDocument> documents = habrDocumentRepository.findByWord(word);
-                return habrWordCounter.countWordByDocument(word, documents);
+                List<DocumentWordCount> documentWordCounts = new ArrayList<>();
+                for(String word : words) {
+                    List<HabrDocument> documents = habrDocumentRepository.findByWord(word);
+                    documentWordCounts.add(habrWordCounter.countWordByDocument(word, documents));
+                }
+
+                return documentWordCounts;
             }
-            default: return new DocumentWordCount(word);
+            default: return new ArrayList<>();
         }
     }
 }

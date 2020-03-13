@@ -42,52 +42,60 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
     }
 
     @Override
-    public void extractDocument(AbstractExtractorParams abstractExtractorParams) throws Exception {
+    public int extractDocument(AbstractExtractorParams abstractExtractorParams) throws Exception {
         HabrExtractorParams habrExtractorParams = (HabrExtractorParams) abstractExtractorParams;
+        int downloadCounter = 0;
 
         List<String> postIds = habrExtractorParams.getPostIds();
 
         for(String postIdString : postIds) {
-            final long postId = Long.parseLong(postIdString);
-            String document = DocumentDownloader.downloadDocument(HABR_URL_POST + postId);
+            try{
+                final long postId = Long.parseLong(postIdString);
+                String document = DocumentDownloader.downloadDocument(HABR_URL_POST + postId);
 
-            if(!StringUtils.isEmpty(document)) {
-                String header = document.substring(
-                        getStartPositionWithOffset(document, HEADER_START),
-                        document.indexOf(HEADER_END)
-                );
-                String postTime = document.substring(
-                        getStartPositionWithOffset(document, POST_TIME_START),
-                        document.indexOf(POST_TIME_END) + 1
-                );
-                String body = document.substring(
-                        getStartPositionWithOffset(document, BODY_START),
-                        document.indexOf(BODY_END)
-                );
+                if(!StringUtils.isEmpty(document)) {
+                    String header = document.substring(
+                            getStartPositionWithOffset(document, HEADER_START),
+                            document.indexOf(HEADER_END)
+                    );
+                    String postTime = document.substring(
+                            getStartPositionWithOffset(document, POST_TIME_START),
+                            document.indexOf(POST_TIME_END) + 1
+                    );
+                    String body = document.substring(
+                            getStartPositionWithOffset(document, BODY_START),
+                            document.indexOf(BODY_END)
+                    );
 
-                String comCount = document.substring(
-                        getStartPositionWithOffset(document, COMMENTS_COUNT_START));
-                String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
-                System.out.println("--------");
-                System.out.println(htmlCleanerPipeline.process(header));
-                System.out.println(russianStemmerPipeline.process(header));
-                System.out.println(htmlCleanerPipeline.process(body));
-                System.out.println(russianStemmerPipeline.process(body));
-                System.out.println(commentsCount);
-                System.out.println(DateFormats.CUSTOM_DATE_FORMAT.parse(postTime));
-                System.out.println("--------");
+                    String comCount = document.substring(
+                            getStartPositionWithOffset(document, COMMENTS_COUNT_START));
+                    String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
+                    System.out.println("--------");
+                    System.out.println(htmlCleanerPipeline.process(header));
+                    System.out.println(russianStemmerPipeline.process(header));
+                    System.out.println(htmlCleanerPipeline.process(body));
+                    System.out.println(russianStemmerPipeline.process(body));
+                    System.out.println(commentsCount);
+                    System.out.println(DateFormats.CUSTOM_DATE_FORMAT.parse(postTime));
+                    System.out.println("--------");
 
-                habrDocumentRepository.save(new HabrDocument(
-                        postId,
-                        htmlCleanerPipeline.process(header),
-                        htmlCleanerPipeline.process(body),
-                        russianStemmerPipeline.process(header),
-                        russianStemmerPipeline.process(body),
-                        Integer.parseInt(commentsCount.trim()),
-                        DateFormats.CUSTOM_DATE_FORMAT.parse(postTime))
-                );
+                    habrDocumentRepository.save(new HabrDocument(
+                            postId,
+                            htmlCleanerPipeline.process(header),
+                            htmlCleanerPipeline.process(body),
+                            russianStemmerPipeline.process(header),
+                            russianStemmerPipeline.process(body),
+                            Integer.parseInt(commentsCount.trim()),
+                            DateFormats.CUSTOM_DATE_FORMAT.parse(postTime))
+                    );
+                }
+                downloadCounter++;
+            }
+            catch(Exception e) {
+
             }
         }
+        return downloadCounter;
     }
 
     private int getStartPositionWithOffset(String string, String point) {
