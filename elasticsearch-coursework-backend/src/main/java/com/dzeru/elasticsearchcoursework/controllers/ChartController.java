@@ -42,16 +42,18 @@ public class ChartController {
         List<String> wordList = Arrays.asList(words.split(","));
         List<DocumentWordCount> documentWordCounts = chartDataService.getDataByDocument(wordList, "habr");
 
-        List<String> labels = new ArrayList<>();
+        Set<String> labelsSet = new TreeSet<>();
         List<DataSetDto> dataSetDtos = new ArrayList<>();
 
         for(DocumentWordCount documentWordCount : documentWordCounts) {
-            labels.addAll(documentWordCount.getCounts()
+            labelsSet.addAll(documentWordCount.getCounts()
                     .stream()
                     .sorted(Comparator.comparing(DocumentWordCountEntry::getDate))
                     .map(d -> DateFormats.CUSTOM_DATE_FORMAT.format(d.getDate()))
                     .collect(Collectors.toList()));
         }
+
+        List<String> labels = new ArrayList<>(labelsSet);
 
         for(DocumentWordCount documentWordCount : documentWordCounts) {
             List<DocumentWordCountEntry> countEntries = documentWordCount.getCounts();
