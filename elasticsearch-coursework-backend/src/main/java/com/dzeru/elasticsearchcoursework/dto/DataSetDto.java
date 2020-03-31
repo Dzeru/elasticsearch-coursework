@@ -45,9 +45,9 @@ public class DataSetDto {
 
     private float pointHitRadius;
 
-    private List<Integer> data;
+    private List<Long> data;
 
-    public DataSetDto(String label, List<Integer> data) {
+    public DataSetDto(String label, List<Long> data) {
         this.label = label;
         this.data = data;
 

@@ -5,14 +5,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 public class ChartDto {
-    List<String> labels;
+    Set<String> labels;
     List<DataSetDto> datasets;
 
-    public ChartDto(List<String> labels, DataSetDto dataSetDto) {
+    public ChartDto(Set<String> labels, DataSetDto dataSetDto) {
         this.labels = labels;
         datasets = new ArrayList<>();
         datasets.add(dataSetDto);

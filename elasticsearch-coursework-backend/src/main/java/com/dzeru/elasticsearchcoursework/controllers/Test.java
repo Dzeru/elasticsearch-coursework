@@ -1,6 +1,5 @@
 package com.dzeru.elasticsearchcoursework.controllers;
 
-import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.processors.processors.WhitespaceProcessor;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
@@ -40,15 +39,5 @@ public class Test {
     @GetMapping("/f/{find}")
     public List<HabrDocument> find(@PathVariable("find") String find) {
         return habrDocumentRepository.findByWord(find);
-    }
-
-    @GetMapping("/c")
-    public Map<String, List<WordCount>> count() {
-        return wordCounter.countAllWords(habrDocumentRepository.findAll(), CountMode.ALL);
-    }
-
-    @GetMapping("/co")
-    public List<WordCount> countOne(@RequestParam("word") String word) {
-        return wordCounter.countByWord(word, habrDocumentRepository.findAll(), CountMode.ALL);
     }
 }
