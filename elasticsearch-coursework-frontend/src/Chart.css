@@ -1,7 +1,17 @@
 .container {
-    margin: 3vh 2vw;
+    margin: 2vh 1vw;
+    padding: 0.5vh 0.5vw;
     display: inline-block;
     border: solid 1px grey;
+    overflow: auto;
+}
+
+.chart-form-radio {
+    margin: 0.1em 1vw;
+}
+
+.chart-form-label {
+    color: #b40000;
 }
 
 .w60 {

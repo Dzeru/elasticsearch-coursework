@@ -13,7 +13,7 @@ class MainPage extends React.Component {
             <h1>Курсовая работа</h1>
             <ul>
                 <li>Выгрузка статей с сайта habr.com</li>
-                <li>Анализ встречающихся слов</li>
+                <li>Подсчет слов</li>
             </ul>
         </div>
         );
