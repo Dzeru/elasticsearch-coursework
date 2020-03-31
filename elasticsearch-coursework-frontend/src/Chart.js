@@ -6,6 +6,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./Chart.css"
 
+import { registerLocale, setDefaultLocale } from  "react-datepicker";
+import ru from 'date-fns/locale/ru';
+registerLocale('ru', ru)
+
 class Chart extends React.Component {
 
     constructor(props) {
@@ -108,6 +112,7 @@ class Chart extends React.Component {
                                   selected={this.state.startDate}
                                   onChange={this.handleStartDateChange}
                                   dateFormat="yyyy-MM-dd"
+                                  locale="ru"
                                 />
                             </td>
                         </tr>
@@ -118,6 +123,7 @@ class Chart extends React.Component {
                                   selected={this.state.endDate}
                                   onChange={this.handleEndDateChange}
                                   dateFormat="yyyy-MM-dd"
+                                  locale="ru"
                                 />
                             </td>
                         </tr>
