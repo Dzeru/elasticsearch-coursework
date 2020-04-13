@@ -4,7 +4,7 @@ import com.dzeru.elasticsearchcoursework.dto.ChartDto;
 import com.dzeru.elasticsearchcoursework.dto.DataSetDto;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
-import com.dzeru.elasticsearchcoursework.services.HabrWordCounterImpl;
+import com.dzeru.elasticsearchcoursework.services.impl.HabrWordCounterImpl;
 import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

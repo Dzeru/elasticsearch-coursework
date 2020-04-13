@@ -1,14 +1,9 @@
 package com.dzeru.elasticsearchcoursework.services;
 
-import com.dzeru.elasticsearchcoursework.dto.DocumentWordCount;
-import com.dzeru.elasticsearchcoursework.dto.WordCount;
-import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
-import com.dzeru.elasticsearchcoursework.util.CountMode;
+import com.dzeru.elasticsearchcoursework.services.impl.HabrWordCounterImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class ChartDataServiceImpl {

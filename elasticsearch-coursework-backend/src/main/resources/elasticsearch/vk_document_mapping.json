@@ -1,0 +1,10 @@
+{
+  "vk_document": {
+    "properties": {
+      "body": {
+        "type": "text",
+        "analyzer": "vk_document_analyzer"
+      }
+    }
+  }
+}

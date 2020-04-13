@@ -1,0 +1,18 @@
+{
+  "index": {
+    "number_of_shards": "1",
+    "number_of_replicas": "0"
+  },
+  "analyzer": {
+    "vk_author_analyzer": {
+      "type": "custom",
+      "tokenizer": "standard",
+      "char_filter": [
+        "html_strip"
+      ],
+      "filter": [
+        "lowercase"
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "vk_author": {
+    "properties": {
+      "name": {
+        "type": "text",
+        "analyzer": "vk_author_analyzer"
+      }
+    }
+  }
+}

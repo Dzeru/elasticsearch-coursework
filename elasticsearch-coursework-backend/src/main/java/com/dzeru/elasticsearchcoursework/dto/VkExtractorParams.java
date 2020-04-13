@@ -9,10 +9,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class HabrExtractorParams extends AbstractExtractorParams {
+public class VkExtractorParams extends AbstractExtractorParams {
+
+    private String author;
+    private Long authorId;
     private List<String> postIds;
 
-    public HabrExtractorParams(List<String> postIds) {
+    public VkExtractorParams(String author, Long authorId, List<String> postIds) {
+        this.author = author;
+        this.authorId = authorId;
         this.postIds = postIds;
     }
 }
+

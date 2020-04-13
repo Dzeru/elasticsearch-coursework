@@ -1,8 +1,9 @@
-package com.dzeru.elasticsearchcoursework.services;
+package com.dzeru.elasticsearchcoursework.services.impl;
 
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.AbstractDocument;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
+import com.dzeru.elasticsearchcoursework.services.WordCounter;
 import com.dzeru.elasticsearchcoursework.util.CountMode;
 import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import org.springframework.stereotype.Service;

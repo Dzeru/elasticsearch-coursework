@@ -1,4 +1,4 @@
-package com.dzeru.elasticsearchcoursework.services;
+package com.dzeru.elasticsearchcoursework.services.impl;
 
 import com.dzeru.elasticsearchcoursework.dto.AbstractExtractorParams;
 import com.dzeru.elasticsearchcoursework.dto.HabrExtractorParams;
@@ -6,8 +6,10 @@ import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.processors.pipelines.HtmlCleanerPipeline;
 import com.dzeru.elasticsearchcoursework.processors.pipelines.RussianStemmerPipeline;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
+import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
 import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
+import com.dzeru.elasticsearchcoursework.util.ExtractorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,7 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
     }
 
     @Override
-    public int extractDocument(AbstractExtractorParams abstractExtractorParams) throws Exception {
+    public int extractDocument(AbstractExtractorParams abstractExtractorParams) {
         HabrExtractorParams habrExtractorParams = (HabrExtractorParams) abstractExtractorParams;
         int downloadCounter = 0;
 
@@ -55,20 +57,20 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
 
                 if(!StringUtils.isEmpty(document)) {
                     String header = document.substring(
-                            getStartPositionWithOffset(document, HEADER_START),
+                            ExtractorUtils.getStartPositionWithOffset(document, HEADER_START),
                             document.indexOf(HEADER_END)
                     );
                     String postTime = document.substring(
-                            getStartPositionWithOffset(document, POST_TIME_START),
+                            ExtractorUtils.getStartPositionWithOffset(document, POST_TIME_START),
                             document.indexOf(POST_TIME_END) + 1
                     );
                     String body = document.substring(
-                            getStartPositionWithOffset(document, BODY_START),
+                            ExtractorUtils.getStartPositionWithOffset(document, BODY_START),
                             document.indexOf(BODY_END)
                     );
 
                     String comCount = document.substring(
-                            getStartPositionWithOffset(document, COMMENTS_COUNT_START));
+                            ExtractorUtils.getStartPositionWithOffset(document, COMMENTS_COUNT_START));
                     String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
                     System.out.println("--------");
                     System.out.println(htmlCleanerPipeline.process(header));
@@ -88,17 +90,13 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
                             Integer.parseInt(commentsCount.trim()),
                             DateFormats.CUSTOM_DATE_FORMAT.parse(postTime))
                     );
+                    downloadCounter++;
                 }
-                downloadCounter++;
             }
             catch(Exception e) {
 
             }
         }
         return downloadCounter;
-    }
-
-    private int getStartPositionWithOffset(String string, String point) {
-        return string.indexOf(point) + point.length();
     }
 }
