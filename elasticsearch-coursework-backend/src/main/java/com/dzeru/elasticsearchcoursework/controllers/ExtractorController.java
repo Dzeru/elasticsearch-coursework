@@ -84,7 +84,6 @@ public class ExtractorController {
         }
     }
 
-
     private List<String> getPostIds(String postIds) {
         if(postIds.contains(",")) {
             return Arrays.asList(postIds.split(","));

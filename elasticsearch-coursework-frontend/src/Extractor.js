@@ -12,6 +12,8 @@ class Extractor extends React.Component {
             vkAuthorName: '',
             vkAuthorUrl: '',
             vkAuthorId: '',
+            vkAuId: '',
+            vkPostIds: ''
         }
 
         this.handleSubmitHabr = this.handleSubmitHabr.bind(this);
@@ -20,6 +22,9 @@ class Extractor extends React.Component {
         this.handleChangeVkAuthorName = this.handleChangeVkAuthorName.bind(this);
         this.handleChangeVkAuthorUrl = this.handleChangeVkAuthorUrl.bind(this);
         this.handleChangeVkAuthorId = this.handleChangeVkAuthorId.bind(this);
+        this.handleSubmitVk = this.handleSubmitVk.bind(this);
+        this.handleChangeVkPostIds = this.handleChangeVkPostIds.bind(this);
+        this.handleChangeVkAuId = this.handleChangeVkAuId.bind(this);
     };
 
     handleChangeHabr(event) {
@@ -49,15 +54,34 @@ class Extractor extends React.Component {
     }
 
     handleSubmitVkAuthor(event) {
-            event.preventDefault();
-            const url = 'http://localhost:8080/api/extract/vk/author?' + 'name=' + this.state.vkAuthorName +
-            '&url=' + this.state.vkAuthorUrl + "&authorId=" + this.state.vkAuthorId;
+        event.preventDefault();
+        const url = 'http://localhost:8080/api/extract/vk/author?' + 'name=' + this.state.vkAuthorName +
+        '&url=' + this.state.vkAuthorUrl + "&authorId=" + this.state.vkAuthorId;
 
-            axios.get(url)
-                .then(res => {
-                    alert(res.data);
-                })
-        }
+        axios.get(url)
+            .then(res => {
+                alert(res.data);
+            })
+    }
+
+    handleChangeVkPostIds(event) {
+        this.setState({vkPostIds: event.target.value})
+    }
+
+    handleChangeVkAuId(event) {
+        this.setState({vkAuId: event.target.value})
+    }
+
+    handleSubmitVk(event) {
+        event.preventDefault();
+        const url = 'http://localhost:8080/api/extract/vk?' + 'postIds=' + this.state.vkPostIds
+        + "&authorId=" + this.state.vkAuId;
+
+        axios.get(url)
+            .then(res => {
+                alert('Обработано документов: ' + res.data + '\nНекоторые документы могли быть недоступны или удалены.');
+            })
+    }
 
     render() {
         return (
@@ -72,17 +96,31 @@ class Extractor extends React.Component {
                         </ul>
 
                     <form onSubmit={this.handleSubmitHabr}>
-                        <input className="settings-element input-light" type="text" value={this.state.habrIds} onChange={this.handleChangeHabr}/>
+                        <input className="settings-element input-light" type="text" value={this.state.habrIds} placeholder="IDs" onChange={this.handleChangeHabr}/>
                         <button className="settings-element button-light" type="submit">Выгрузить</button>
                     </form>
                 </div>
                 <div>
                     <h1>Добавление авторов VK</h1>
                     <form onSubmit={this.handleSubmitVkAuthor}>
-                        <input className="settings-element input-light" type="text" value={this.state.vkAuthorName} placeHolder="Название" onChange={this.handleChangeVkAuthorName}/>
-                        <input className="settings-element input-light" type="text" value={this.state.vkAuthorUrl} placeHolder="URL" onChange={this.handleChangeVkAuthorUrl}/>
-                        <input className="settings-element input-light" type="text" value={this.state.vkAuthorId} placeHolder="ID" onChange={this.handleChangeVkAuthorId}/>
+                        <input className="settings-element input-light" type="text" value={this.state.vkAuthorName} placeholder="Название" onChange={this.handleChangeVkAuthorName}/>
+                        <input className="settings-element input-light" type="text" value={this.state.vkAuthorUrl} placeholder="URL" onChange={this.handleChangeVkAuthorUrl}/>
+                        <input className="settings-element input-light" type="text" value={this.state.vkAuthorId} placeholder="ID" onChange={this.handleChangeVkAuthorId}/>
                         <button className="settings-element button-light" type="submit">Добавить</button>
+                    </form>
+                </div>
+                <div>
+                    <h1>Выгрузка VK</h1>
+                    <p>Введите id одним из следующих способов:</p>
+                        <ul className="ex-ul">
+                            <li>Одно число - один документ с указанным id;</li>
+                            <li>Числа через запятую без пробелов: несколько документов с указанными id;</li>
+                            <li>Два числа через дефис: диапазон документов, включая указанные id.</li>
+                        </ul>
+                    <form onSubmit={this.handleSubmitVk}>
+                        <input className="settings-element input-light" type="text" value={this.state.vkPostIds} placeholder="IDs" onChange={this.handleChangeVkPostIds}/>
+                        <input className="settings-element input-light" type="text" value={this.state.vkAuId} placeholder="ID автора" onChange={this.handleChangeVkAuId}/>
+                        <button className="settings-element button-light" type="submit">Выгрузить</button>
                     </form>
                 </div>
             </div>

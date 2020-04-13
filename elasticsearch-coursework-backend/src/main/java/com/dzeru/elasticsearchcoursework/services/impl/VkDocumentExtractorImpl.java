@@ -28,8 +28,8 @@ import java.util.TimeZone;
 public class VkDocumentExtractorImpl implements DocumentExtractor {
 
 
-    private static final String POST_TIME_START = "<a class=\"post_link\" href=\"/wall%s_%s\">";
-    private static final String BODY_START = "<div class=\"wall_post_text\">";
+    private static final String POST_TIME_START = "<span class=\"wi_date\">";
+    private static final String BODY_START = "<div class=\"pi_text\">";
 
     /*
     1st param - author url
@@ -62,7 +62,7 @@ public class VkDocumentExtractorImpl implements DocumentExtractor {
         if(null != vkExtractorParams.getAuthorId()) {
             List<String> postIds = vkExtractorParams.getPostIds();
             for(String postIdString : postIds) {
-                try{
+                try {
                     VkAuthor vkAuthor = vkAuthorRepository
                             .findById(vkExtractorParams.getAuthorId())
                             .orElseThrow(IllegalArgumentException::new);
@@ -75,22 +75,17 @@ public class VkDocumentExtractorImpl implements DocumentExtractor {
                             postId
                     ));
 
-                    if(!StringUtils.isEmpty(document)) {
+                    if(StringUtils.isNotEmpty(document)) {
                         String postTimeString = document.substring(
                                 ExtractorUtils.getStartPositionWithOffset(
                                         document,
-                                        String.format(
-                                                POST_TIME_START,
-                                                vkAuthor.getAuthorId(),
-                                                postId
-                        )));
-                        postTimeString = postTimeString.substring(0, postTimeString.indexOf("</a>"));
+                                        POST_TIME_START
+                                ));
+                        postTimeString = postTimeString.substring(0, postTimeString.indexOf("</span>"));
                         Date postTime = getPostTime(postTimeString);
 
                         String body = document.substring(ExtractorUtils.getStartPositionWithOffset(document, BODY_START));
                         body = body.substring(0, body.indexOf("</div>"));
-
-
 
                         System.out.println("--------");
                         System.out.println(htmlCleanerPipeline.process(body));
@@ -100,7 +95,7 @@ public class VkDocumentExtractorImpl implements DocumentExtractor {
 
                         vkDocumentRepository.save(new VkDocument(
                            postId,
-                           vkAuthor.getAuthorId(),
+                           vkExtractorParams.getAuthorId(),
                            body,
                            russianStemmerPipeline.process(body),
                             postTime
@@ -120,7 +115,7 @@ public class VkDocumentExtractorImpl implements DocumentExtractor {
 
     private Date getPostTime(String postTimeString) {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/Samara"));
-        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);

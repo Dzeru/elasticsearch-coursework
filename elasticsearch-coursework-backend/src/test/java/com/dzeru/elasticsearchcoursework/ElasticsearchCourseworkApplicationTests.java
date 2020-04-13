@@ -1,7 +1,7 @@
 package com.dzeru.elasticsearchcoursework;
 
 import com.dzeru.elasticsearchcoursework.processors.pipelines.RussianStemmerPipeline;
-import com.dzeru.elasticsearchcoursework.services.HabrDocumentExtractorImpl;
+import com.dzeru.elasticsearchcoursework.services.impl.HabrDocumentExtractorImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
