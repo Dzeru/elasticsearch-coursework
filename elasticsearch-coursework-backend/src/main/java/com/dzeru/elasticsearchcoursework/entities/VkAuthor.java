@@ -9,7 +9,7 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 
 @Data
 @NoArgsConstructor
-@Document(indexName = "vk_document", type = "vk_author")
+@Document(indexName = "vk_author", type = "vk_author")
 @Setting(settingPath = "/elasticsearch/vk_author_setting.json")
 @Mapping(mappingPath = "/elasticsearch/vk_author_mapping.json")
 public class VkAuthor {

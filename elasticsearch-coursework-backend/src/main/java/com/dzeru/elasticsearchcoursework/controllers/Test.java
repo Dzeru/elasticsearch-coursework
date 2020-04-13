@@ -5,6 +5,7 @@ import com.dzeru.elasticsearchcoursework.processors.processors.WhitespaceProcess
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
 import com.dzeru.elasticsearchcoursework.services.WordCounter;
+import com.dzeru.elasticsearchcoursework.services.impl.HabrDocumentExtractorImpl;
 import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ public class Test {
     private HabrDocumentRepository habrDocumentRepository;
 
     @Autowired
-    private DocumentExtractor documentExtractor;
+    private HabrDocumentExtractorImpl documentExtractor;
 
     @Autowired
     private WordCounter wordCounter;
