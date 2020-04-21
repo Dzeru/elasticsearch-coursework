@@ -11,6 +11,8 @@ import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
 import com.dzeru.elasticsearchcoursework.util.ExtractorUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +21,11 @@ import java.util.List;
 @Service
 public class HabrDocumentExtractorImpl implements DocumentExtractor {
 
-    private static final String HEADER_START = "<span class=\"post__title-text\">";
-    private static final String HEADER_END = "</h1>";
-    private static final String POST_TIME_START = "<span class=\"post__time\" data-time_published=\"";
-    private static final String POST_TIME_END = "Z\">";
-    private static final String BODY_START = "<div class=\"post__body post__body_full\">";
-    private static final String BODY_END = "<dl class=\"post__tags\">";
-    private static final String COMMENTS_COUNT_START = "<span class=\"comments-section__head-counter\" id=\"comments_count\">";
-    private static final String COMMENTS_COUNT_END = "</span>";
+    private static final String HEADER_CLASS = "post__title-text";
+    private static final String POST_TIME_CLASS = "post__time";
+    private static final String POST_TIME_ATTRIBUTE = "data-time_published";
+    private static final String BODY_ID = "post-content-body";
+    private static final String COMMENTS_COUNT_ID = "comments_count";
 
     private static final String HABR_URL_POST= "https://habr.com/ru/post/";
 
@@ -56,22 +55,12 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
                 String document = DocumentDownloader.downloadDocument(HABR_URL_POST + postId);
 
                 if(!StringUtils.isEmpty(document)) {
-                    String header = document.substring(
-                            ExtractorUtils.getStartPositionWithOffset(document, HEADER_START),
-                            document.indexOf(HEADER_END)
-                    );
-                    String postTime = document.substring(
-                            ExtractorUtils.getStartPositionWithOffset(document, POST_TIME_START),
-                            document.indexOf(POST_TIME_END) + 1
-                    );
-                    String body = document.substring(
-                            ExtractorUtils.getStartPositionWithOffset(document, BODY_START),
-                            document.indexOf(BODY_END)
-                    );
+                    Document html = Jsoup.parse(document);
+                    String header = html.getElementsByClass(HEADER_CLASS).get(0).text();
+                    String postTime = html.getElementsByClass(POST_TIME_CLASS).get(0).attr(POST_TIME_ATTRIBUTE);
+                    String body = html.getElementById(BODY_ID).text();
+                    String commentsCount = html.getElementById(COMMENTS_COUNT_ID).text();
 
-                    String comCount = document.substring(
-                            ExtractorUtils.getStartPositionWithOffset(document, COMMENTS_COUNT_START));
-                    String commentsCount = comCount.substring(0, comCount.indexOf(COMMENTS_COUNT_END));
                     System.out.println("--------");
                     System.out.println(htmlCleanerPipeline.process(header));
                     System.out.println(russianStemmerPipeline.process(header));

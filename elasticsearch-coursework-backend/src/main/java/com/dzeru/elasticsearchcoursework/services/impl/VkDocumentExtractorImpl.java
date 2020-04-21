@@ -31,9 +31,8 @@ import java.util.TimeZone;
 @Service
 public class VkDocumentExtractorImpl implements DocumentExtractor {
 
-
-    private static final String POST_TIME_START = "<span class=\"wi_date\">";
-    private static final String BODY_START = "<div class=\"pi_text\">";
+    private static final String POST_TIME_CLASS = "wi_date";
+    private static final String BODY_CLASS = "pi_text";
 
     /*
     1st param - author url
@@ -80,16 +79,11 @@ public class VkDocumentExtractorImpl implements DocumentExtractor {
                     ));
 
                     if(StringUtils.isNotEmpty(document)) {
-                        long start = System.currentTimeMillis();
                         Document html = Jsoup.parse(document);
-                        Elements postTimeElement = html.getElementsByClass("wi_date");
-
-                        String postTimeString = postTimeElement.get(0).text();
+                        String postTimeString = html.getElementsByClass(POST_TIME_CLASS).get(0).text();
                         Date postTime = getPostTime(postTimeString);
+                        String body = html.getElementsByClass(BODY_CLASS).get(0).text();
 
-                        String body = html.getElementsByClass("pi_text").get(0).text();
-                        long end = System.currentTimeMillis();
-                        System.out.println((end - start));
                         System.out.println("--------");
                         System.out.println(htmlCleanerPipeline.process(body));
                         System.out.println(russianStemmerPipeline.process(body));
@@ -97,11 +91,11 @@ public class VkDocumentExtractorImpl implements DocumentExtractor {
                         System.out.println("--------");
 
                         vkDocumentRepository.save(new VkDocument(
-                           postId,
-                           vkExtractorParams.getAuthorId(),
-                           body,
-                           russianStemmerPipeline.process(body),
-                            postTime
+                                postId,
+                                vkExtractorParams.getAuthorId(),
+                                body,
+                                russianStemmerPipeline.process(body),
+                                postTime
                         ));
 
                         downloadCounter++;
