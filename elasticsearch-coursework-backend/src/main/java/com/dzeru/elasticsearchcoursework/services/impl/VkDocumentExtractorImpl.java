@@ -16,6 +16,10 @@ import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
 import com.dzeru.elasticsearchcoursework.util.ExtractorUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,17 +80,16 @@ public class VkDocumentExtractorImpl implements DocumentExtractor {
                     ));
 
                     if(StringUtils.isNotEmpty(document)) {
-                        String postTimeString = document.substring(
-                                ExtractorUtils.getStartPositionWithOffset(
-                                        document,
-                                        POST_TIME_START
-                                ));
-                        postTimeString = postTimeString.substring(0, postTimeString.indexOf("</span>"));
+                        long start = System.currentTimeMillis();
+                        Document html = Jsoup.parse(document);
+                        Elements postTimeElement = html.getElementsByClass("wi_date");
+
+                        String postTimeString = postTimeElement.get(0).text();
                         Date postTime = getPostTime(postTimeString);
 
-                        String body = document.substring(ExtractorUtils.getStartPositionWithOffset(document, BODY_START));
-                        body = body.substring(0, body.indexOf("</div>"));
-
+                        String body = html.getElementsByClass("pi_text").get(0).text();
+                        long end = System.currentTimeMillis();
+                        System.out.println((end - start));
                         System.out.println("--------");
                         System.out.println(htmlCleanerPipeline.process(body));
                         System.out.println(russianStemmerPipeline.process(body));
