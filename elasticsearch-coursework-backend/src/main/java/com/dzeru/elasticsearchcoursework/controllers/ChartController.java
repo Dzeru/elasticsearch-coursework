@@ -47,7 +47,8 @@ public class ChartController {
     }*/
 
     @GetMapping("/test2")
-    public ChartDto test2(@RequestParam("words") String words) {
+    public ChartDto test2(@RequestParam("words") String words,
+                          @RequestParam("countMode") String countMode) {
         String[] wordList = words.split(",");
 
         List<WordCount> wordCounts = new ArrayList<>();
@@ -56,7 +57,7 @@ public class ChartController {
         for(String word : wordList) {
             WordCount wordCount = habrWordCounter.countDocumentHowManyWord(
                     word, habrDocumentRepository.findAll(),
-                    CountMode.ALL);
+                    CountMode.valueOf(countMode));
             wordCounts.add(wordCount);
         }
 

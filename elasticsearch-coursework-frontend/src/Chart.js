@@ -19,6 +19,7 @@ class Chart extends React.Component {
             word: '',
             startDate: new Date(),
             endDate: new Date(),
+            countMode: 'ALL',
             data:
             {
               labels: [],
@@ -52,17 +53,18 @@ class Chart extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
+        this.handleCountModeChange = this.handleCountModeChange.bind(this);
     }
 
     handleChange(event) {
         this.setState({
-        word: event.target.value
+            word: event.target.value
         });
     };
 
     handleStartDateChange = date => {
         this.setState({
-          startDate: date
+            startDate: date
         });
     };
 
@@ -72,9 +74,16 @@ class Chart extends React.Component {
         });
     };
 
+    handleCountModeChange(event) {
+        this.setState({
+            countMode: event.target.value
+        });
+    };
+
     handleSubmit(event) {
         event.preventDefault();
-        const url = 'http://localhost:8080/api/chart/test2?words=' + this.state.word;
+        const url = 'http://localhost:8080/api/chart/test2?words=' + this.state.word +
+            '&countMode=' + this.state.countMode;
 
         axios.get(url)
             .then(res => {
@@ -132,7 +141,7 @@ class Chart extends React.Component {
                         </tr>
                         <tr>
                             <td>
-                                <p><input class="chart-form-radio" type="radio" name="countWordInDocument" value="1"/>Наличие</p>
+                                <p><input class="chart-form-radio" type="radio" name="countWordInDocument" value="1" checked/>Наличие</p>
                             </td>
                         </tr>
                         <tr>
@@ -145,7 +154,7 @@ class Chart extends React.Component {
                         </tr>
                         <tr>
                             <td>
-                                <p><input class="chart-form-radio" type="radio" name="stemmerType" value="Elasticsearch"/>Elasticsearch</p>
+                                <p><input class="chart-form-radio" type="radio" name="stemmerType" value="Elasticsearch" checked/>Elasticsearch</p>
                             </td>
                         </tr>
                         <tr>
@@ -156,17 +165,17 @@ class Chart extends React.Component {
                         <tr><td colSpan="2"><span class="chart-form-label">Учитывать:</span></td></tr>
                         <tr>
                             <td>
-                                <p><input class="chart-form-radio" type="radio" name="countMode" value="ALL"/>Все</p>
+                                <p><input class="chart-form-radio" type="radio" name="countMode" value="ALL" checked={this.state.countMode === 'ALL'} onChange={this.handleCountModeChange}/>Все</p>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <p><input class="chart-form-radio" type="radio" name="countMode" value="ONLY_BODY"/>Только тело</p>
+                                <p><input class="chart-form-radio" type="radio" name="countMode" value="ONLY_BODY" checked={this.state.countMode === 'ONLY_BODY'} onChange={this.handleCountModeChange}/>Только тело</p>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <p><input class="chart-form-radio" type="radio" name="countMode" value="ONLY_HEADER"/>Только заголовок</p>
+                                <p><input class="chart-form-radio" type="radio" name="countMode" value="ONLY_HEADER" checked={this.state.countMode === 'ONLY_HEADER'} onChange={this.handleCountModeChange}/>Только заголовок</p>
                             </td>
                         </tr>
                     </tbody>
