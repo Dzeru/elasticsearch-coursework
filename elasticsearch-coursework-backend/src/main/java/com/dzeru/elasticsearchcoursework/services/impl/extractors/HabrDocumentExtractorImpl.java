@@ -1,4 +1,4 @@
-package com.dzeru.elasticsearchcoursework.services.impl;
+package com.dzeru.elasticsearchcoursework.services.impl.extractors;
 
 import com.dzeru.elasticsearchcoursework.dto.AbstractExtractorParams;
 import com.dzeru.elasticsearchcoursework.dto.HabrExtractorParams;
@@ -9,7 +9,6 @@ import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
 import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
-import com.dzeru.elasticsearchcoursework.util.ExtractorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

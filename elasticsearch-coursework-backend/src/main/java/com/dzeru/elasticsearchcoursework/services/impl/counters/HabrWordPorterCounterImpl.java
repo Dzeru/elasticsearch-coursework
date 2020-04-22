@@ -1,4 +1,4 @@
-package com.dzeru.elasticsearchcoursework.services.impl;
+package com.dzeru.elasticsearchcoursework.services.impl.counters;
 
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.entities.AbstractDocument;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class HabrWordCounterImpl implements WordCounter {
+public class HabrWordPorterCounterImpl implements WordCounter {
 
     public WordCount countDocumentContainsWord(String word,
                                                Iterable<? extends AbstractDocument> documents,

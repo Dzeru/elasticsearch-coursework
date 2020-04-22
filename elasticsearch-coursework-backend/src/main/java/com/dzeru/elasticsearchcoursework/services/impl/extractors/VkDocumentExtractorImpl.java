@@ -1,25 +1,18 @@
-package com.dzeru.elasticsearchcoursework.services.impl;
+package com.dzeru.elasticsearchcoursework.services.impl.extractors;
 
 import com.dzeru.elasticsearchcoursework.dto.AbstractExtractorParams;
-import com.dzeru.elasticsearchcoursework.dto.HabrExtractorParams;
 import com.dzeru.elasticsearchcoursework.dto.VkExtractorParams;
-import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.entities.VkAuthor;
 import com.dzeru.elasticsearchcoursework.entities.VkDocument;
 import com.dzeru.elasticsearchcoursework.processors.pipelines.HtmlCleanerPipeline;
 import com.dzeru.elasticsearchcoursework.processors.pipelines.RussianStemmerPipeline;
-import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.repositories.VkAuthorRepository;
 import com.dzeru.elasticsearchcoursework.repositories.VkDocumentRepository;
 import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
-import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import com.dzeru.elasticsearchcoursework.util.DocumentDownloader;
-import com.dzeru.elasticsearchcoursework.util.ExtractorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

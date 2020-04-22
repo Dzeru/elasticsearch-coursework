@@ -4,7 +4,7 @@ import com.dzeru.elasticsearchcoursework.dto.ChartDto;
 import com.dzeru.elasticsearchcoursework.dto.DataSetDto;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
-import com.dzeru.elasticsearchcoursework.services.impl.HabrWordCounterImpl;
+import com.dzeru.elasticsearchcoursework.services.impl.counters.HabrWordPorterCounterImpl;
 import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,40 +18,25 @@ import java.util.*;
 @RequestMapping("/chart")
 public class ChartController {
 
-    private final HabrWordCounterImpl habrWordCounter;
+    private final HabrWordPorterCounterImpl habrWordCounter;
     private final HabrDocumentRepository habrDocumentRepository;
 
     private static final Random random = new Random();
     private static String rgbaTemplate = "rgba(%d,%d,%d,1)";
 
     @Autowired
-    public ChartController(HabrWordCounterImpl habrWordCounter,
+    public ChartController(HabrWordPorterCounterImpl habrWordCounter,
                            HabrDocumentRepository habrDocumentRepository) {
         this.habrWordCounter = habrWordCounter;
         this.habrDocumentRepository = habrDocumentRepository;
     }
 
-    /*@GetMapping("/test")
-    public ChartDto test(@RequestParam("word") String word) {
-        DocumentWordCount documentWordCount = chartDataService.getDataByDocument(word, "habr");
-        List<String> labels = documentWordCount.getCounts()
-                .stream()
-                .sorted(Comparator.comparing(DocumentWordCountEntry::getDate))
-                .map(d -> DateFormats.CUSTOM_DATE_FORMAT.format(d.getDate()))
-                .collect(Collectors.toList());
-        List<Integer> data = documentWordCount.getCounts()
-                .stream()
-                .map(DocumentWordCountEntry::getCount)
-                .collect(Collectors.toList());
-        return new ChartDto(labels, new DataSetDto(documentWordCount.getWord(), data));
-    }*/
-
     @GetMapping("/test2")
     public ChartDto test2(@RequestParam("words") String words,
                           @RequestParam("countMode") String countMode,
-                          @RequestParam("stemmerType") String stemmerType,
-                          @RequestParam("beginDate") String beginDate,
-                          @RequestParam("endDate") String endDate) {
+                          @RequestParam(value = "stemmerType") String stemmerType,
+                          @RequestParam(value = "beginDate", required = false) String beginDate,
+                          @RequestParam(value = "endDate", required = false) String endDate) {
         String[] wordList = words.split(",");
 
         List<WordCount> wordCounts = new ArrayList<>();

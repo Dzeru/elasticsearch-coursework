@@ -3,19 +3,15 @@ package com.dzeru.elasticsearchcoursework.controllers;
 import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.processors.processors.WhitespaceProcessor;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
-import com.dzeru.elasticsearchcoursework.services.DocumentExtractor;
 import com.dzeru.elasticsearchcoursework.services.WordCounter;
-import com.dzeru.elasticsearchcoursework.services.impl.HabrDocumentExtractorImpl;
-import com.dzeru.elasticsearchcoursework.util.CountMode;
+import com.dzeru.elasticsearchcoursework.services.impl.extractors.HabrDocumentExtractorImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class Test {

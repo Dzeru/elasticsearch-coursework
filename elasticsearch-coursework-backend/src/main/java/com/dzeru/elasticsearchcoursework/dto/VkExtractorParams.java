@@ -13,12 +13,11 @@ public class VkExtractorParams extends AbstractExtractorParams {
 
     private String author;
     private Long authorId;
-    private List<String> postIds;
 
     public VkExtractorParams(String author, Long authorId, List<String> postIds) {
+        super(postIds);
         this.author = author;
         this.authorId = authorId;
-        this.postIds = postIds;
     }
 }
 

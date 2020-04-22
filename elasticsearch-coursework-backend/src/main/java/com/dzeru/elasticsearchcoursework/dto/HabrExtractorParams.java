@@ -10,9 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class HabrExtractorParams extends AbstractExtractorParams {
-    private List<String> postIds;
 
     public HabrExtractorParams(List<String> postIds) {
-        this.postIds = postIds;
+        super(postIds);
     }
 }
