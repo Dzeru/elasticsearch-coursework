@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -40,5 +41,20 @@ public class Test {
     @GetMapping("/f/{find}")
     public List<HabrDocument> find(@PathVariable("find") String find) {
         return habrDocumentRepository.findByWord(find);
+    }
+
+    @GetMapping("/f/{find}/{beginDate}/{endDate}")
+    public List<HabrDocument> findD(@PathVariable("find") String find,
+                                    @PathVariable("beginDate") String beginDate,
+                                    @PathVariable("endDate") String endDate) throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        long beg = dateFormat.parse(beginDate).getTime();
+        long end = dateFormat.parse(endDate).getTime();
+        List<HabrDocument> d = habrDocumentRepository.findByWordAndDate(find, beg, end);
+        for(HabrDocument dd : d) {
+            System.out.println(dateFormat.format(dd.getPostTime()));
+        }
+        System.out.println("---");
+        return d;
     }
 }

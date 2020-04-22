@@ -10,6 +10,30 @@ import java.util.List;
 @Repository
 public interface HabrDocumentRepository extends ElasticsearchRepository<HabrDocument, Long> {
 
-    @Query("{\"multi_match\":{\"query\":\"?0\",\"fields\":[\"header\",\"body\"]}}")
+    @Query("{\"multi_match\": {\n" +
+            "  \"query\":\"?0\",\n" +
+            "  \"fields\":[\"header\",\"body\"]\n" +
+            "  }\n" +
+            "}")
     List<HabrDocument> findByWord(String find);
+
+    @Query("{\n" +
+            "\"bool\": {\n" +
+            "  \"must\": {\n" +
+            "    \"multi_match\": {\n" +
+            "      \"query\":\"?0\",\n" +
+            "      \"fields\":[\"header\",\"body\"]\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"filter\": {\n" +
+            "    \"range\": {\n" +
+            "      \"postTime\": {\n" +
+            "        \"gte\": ?1,\n" +
+            "        \"lte\": ?2\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n" +
+            "}")
+    List<HabrDocument> findByWordAndDate(String word, Long beginDate, Long endDate);
 }
