@@ -20,6 +20,7 @@ class Chart extends React.Component {
       startDate: new Date(),
       endDate: new Date(),
       countMode: 'ALL',
+      stemmerType: 'Elasticsearch',
       data:
       {
         labels: [],
@@ -54,6 +55,7 @@ class Chart extends React.Component {
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleCountModeChange = this.handleCountModeChange.bind(this);
+    this.handleStemmerTypeChange = this.handleStemmerTypeChange.bind(this);
   }
 
   handleChange(event) {
@@ -80,10 +82,16 @@ class Chart extends React.Component {
     });
   };
 
+  handleStemmerTypeChange(event) {
+    this.setState({
+      stemmerType: event.target.value
+    });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     const url = 'http://localhost:8080/api/chart/test2?words=' + this.state.word +
-      '&countMode=' + this.state.countMode;
+      '&countMode=' + this.state.countMode + '&stemmerType=' + this.state.stemmerType;
 
     axios.get(url)
       .then(res => {
@@ -183,7 +191,8 @@ class Chart extends React.Component {
                     type="radio"
                     name="stemmerType"
                     value="Elasticsearch"
-                    checked
+                    checked={this.state.stemmerType === 'Elasticsearch'}
+                    onChange={this.handleStemmerTypeChange}
                   />
                   Elasticsearch
                 </label>
@@ -197,6 +206,8 @@ class Chart extends React.Component {
                     type="radio"
                     name="stemmerType"
                     value="Porter"
+                    checked={this.state.stemmerType === 'Porter'}
+                    onChange={this.handleStemmerTypeChange}
                   />
                   Стеммер Портера
                 </label>

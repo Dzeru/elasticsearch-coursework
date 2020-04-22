@@ -48,7 +48,8 @@ public class ChartController {
 
     @GetMapping("/test2")
     public ChartDto test2(@RequestParam("words") String words,
-                          @RequestParam("countMode") String countMode) {
+                          @RequestParam("countMode") String countMode,
+                          @RequestParam("stemmerType") String stemmerType) {
         String[] wordList = words.split(",");
 
         List<WordCount> wordCounts = new ArrayList<>();
