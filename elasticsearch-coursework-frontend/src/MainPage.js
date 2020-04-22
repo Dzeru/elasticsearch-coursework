@@ -3,22 +3,23 @@ import './MainPage.css'
 
 class MainPage extends React.Component {
 
-    constructor() {
-        super()
-    }
+  constructor() {
+    super()
+  }
 
-    render() {
-        return (
-        <div className="main-container">
-            <h1>Курсовая работа</h1>
-            <ul>
-                <li>Выгрузка статей с сайта habr.com</li>
-                <li>Подсчет слов</li>
-            </ul>
-        </div>
-        );
-    }
-
+  render() {
+    return (
+    <div className="main-container">
+      <h1>Курсовая работа</h1>
+      <ul>
+        <li>Выгрузка статей с сайта habr.com</li>
+        <li>Выгрузка постов с сайта vk.com</li>
+        <li>Подсчет слов</li>
+        <li>Построение графиков</li>
+      </ul>
+    </div>
+    );
+  }
 }
 
 export default MainPage

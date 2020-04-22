@@ -7,17 +7,17 @@ import Header from './Header.js'
 
 class App extends React.Component {
 
-    constructor() {
-        super()
-    }
+  constructor() {
+    super()
+  }
 
-    render() {
-        return (
-            <div>
-                <Header/>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <Header/>
+      </div>
+    );
+  }
 }
 
 export default App;
