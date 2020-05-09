@@ -5,6 +5,7 @@ import com.dzeru.elasticsearchcoursework.dto.DataSetDto;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
 import com.dzeru.elasticsearchcoursework.services.impl.counters.HabrWordPorterCounterImpl;
+import com.dzeru.elasticsearchcoursework.util.Constants;
 import com.dzeru.elasticsearchcoursework.util.CountMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,36 +19,70 @@ import java.util.*;
 @RequestMapping("/chart")
 public class ChartController {
 
-    private final HabrWordPorterCounterImpl habrWordCounter;
+    private final HabrWordPorterCounterImpl habrWordPorterCounter;
     private final HabrDocumentRepository habrDocumentRepository;
 
     private static final Random random = new Random();
     private static String rgbaTemplate = "rgba(%d,%d,%d,1)";
 
     @Autowired
-    public ChartController(HabrWordPorterCounterImpl habrWordCounter,
+    public ChartController(HabrWordPorterCounterImpl habrWordPorterCounter,
                            HabrDocumentRepository habrDocumentRepository) {
-        this.habrWordCounter = habrWordCounter;
+        this.habrWordPorterCounter = habrWordPorterCounter;
         this.habrDocumentRepository = habrDocumentRepository;
     }
 
-    @GetMapping("/test2")
-    public ChartDto test2(@RequestParam("words") String words,
-                          @RequestParam("countMode") String countMode,
-                          @RequestParam(value = "stemmerType") String stemmerType,
-                          @RequestParam(value = "beginDate", required = false) String beginDate,
-                          @RequestParam(value = "endDate", required = false) String endDate) {
+    @GetMapping("/makeChart")
+    public ChartDto makeChart(@RequestParam("words") String words,
+                              @RequestParam("countMode") String countMode,
+                              @RequestParam(value = "stemmerType") String stemmerType,
+                              @RequestParam("countWordInDocument") String countWordInDocument,
+                              @RequestParam(value = "beginDate", required = false) String beginDate,
+                              @RequestParam(value = "endDate", required = false) String endDate) {
         String[] wordList = words.split(",");
 
         List<WordCount> wordCounts = new ArrayList<>();
         List<DataSetDto> dataSetDtos = new ArrayList<>();
 
-        for(String word : wordList) {
-            WordCount wordCount = habrWordCounter.countDocumentHowManyWord(
-                    word, habrDocumentRepository.findAll(),
-                    CountMode.valueOf(countMode));
-            wordCounts.add(wordCount);
+        if(stemmerType.equalsIgnoreCase(Constants.PORTER)) {
+            for(String word : wordList) {
+                WordCount wordCount = new WordCount();
+                if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
+                    wordCount = habrWordPorterCounter.countDocumentContainsWord(
+                            word,
+                            habrDocumentRepository.findAll(),
+                            CountMode.valueOf(countMode));
+                }
+                if(Constants.HOW_MANY.equalsIgnoreCase(countWordInDocument)) {
+                    wordCount = habrWordPorterCounter.countDocumentHowManyWord(
+                            word,
+                            habrDocumentRepository.findAll(),
+                            CountMode.valueOf(countMode));
+                }
+
+                wordCounts.add(wordCount);
+            }
         }
+        if(stemmerType.equals(Constants.ELASTICSEARCH)) {
+            for(String word : wordList) {
+                WordCount wordCount = new WordCount();
+                if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
+                    wordCount = habrWordCounter.countDocumentContainsWord(
+                            word,
+                            habrDocumentRepository.findAll(),
+                            CountMode.valueOf(countMode));
+                }
+                if(Constants.HOW_MANY.equalsIgnoreCase(countWordInDocument)) {
+                    wordCount = habrWordCounter.countDocumentHowManyWord(
+                            word,
+                            habrDocumentRepository.findAll(),
+                            CountMode.valueOf(countMode));
+                }
+
+                wordCounts.add(wordCount);
+            }
+        }
+
 
         Set<String> labels = new TreeSet<>();
 

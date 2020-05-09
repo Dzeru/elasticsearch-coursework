@@ -21,6 +21,7 @@ class Chart extends React.Component {
       endDate: new Date(),
       countMode: 'ALL',
       stemmerType: 'Elasticsearch',
+      countWordInDocument: 'CONTAINS',
       data:
       {
         labels: [],
@@ -56,6 +57,7 @@ class Chart extends React.Component {
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleCountModeChange = this.handleCountModeChange.bind(this);
     this.handleStemmerTypeChange = this.handleStemmerTypeChange.bind(this);
+    this.handleCountWordInDocumentChange = this.handleCountWordInDocumentChange.bind(this);
   }
 
   handleChange(event) {
@@ -88,10 +90,17 @@ class Chart extends React.Component {
     });
   }
 
+  handleCountWordInDocumentChange(event) {
+    this.setState({
+        countWordInDocument: event.target.value
+    });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
-    const url = 'http://localhost:8080/api/chart/test2?words=' + this.state.word +
-      '&countMode=' + this.state.countMode + '&stemmerType=' + this.state.stemmerType;
+    const url = 'http://localhost:8080/api/chart/makeChart?words=' + this.state.word +
+      '&countMode=' + this.state.countMode + '&stemmerType=' + this.state.stemmerType +
+      '&countWordInDocument' + this.state.countWordInDocument;
 
     axios.get(url)
       .then(res => {
@@ -160,8 +169,9 @@ class Chart extends React.Component {
                     className="chart-form-radio"
                     type="radio"
                     name="countWordInDocument"
-                    value="1"
-                    checked
+                    value="CONTAINS"
+                    checked={this.state.countWordInDocument === 'CONTAINS'}
+                    onChange={this.handleCountWordInDocumentChange}
                   />
                   Наличие
                 </label>
@@ -174,7 +184,9 @@ class Chart extends React.Component {
                     className="chart-form-radio"
                     type="radio"
                     name="countWordInDocument"
-                    value="0"
+                    value="HOW_MANY"
+                    checked={this.state.countWordInDocument === 'HOW_MANY'}
+                    onChange={this.handleCountWordInDocumentChange}
                   />
                   Подсчет
                 </label>
