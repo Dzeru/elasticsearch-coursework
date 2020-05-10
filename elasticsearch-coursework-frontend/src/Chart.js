@@ -1,14 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import {Line} from 'react-chartjs-2';
-import DatePicker from "react-datepicker";
 
-import "react-datepicker/dist/react-datepicker.css";
 import "./Chart.css"
-
-import { registerLocale, setDefaultLocale } from  "react-datepicker";
-import ru from 'date-fns/locale/ru';
-registerLocale('ru', ru)
 
 class Chart extends React.Component {
 
@@ -17,13 +11,12 @@ class Chart extends React.Component {
 
     this.state = {
       word: '',
-      startDate: new Date(),
-      endDate: new Date(),
+      beginDate: '',
+      endDate: '',
       countMode: 'ALL',
       stemmerType: 'Elasticsearch',
       countWordInDocument: 'CONTAINS',
-      data:
-      {
+      data: {
         labels: [],
         datasets: [
         {
@@ -53,7 +46,7 @@ class Chart extends React.Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleStartDateChange = this.handleStartDateChange.bind(this);
+    this.handleBeginDateChange = this.handleBeginDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleCountModeChange = this.handleCountModeChange.bind(this);
     this.handleStemmerTypeChange = this.handleStemmerTypeChange.bind(this);
@@ -66,17 +59,17 @@ class Chart extends React.Component {
     });
   };
 
-  handleStartDateChange = date => {
-    this.setState({
-      startDate: date
-    });
-  };
+   handleBeginDateChange(event) {
+     this.setState({
+       beginDate: event.target.value
+     });
+   };
 
-  handleEndDateChange = date => {
-    this.setState({
-      endDate: date
-    });
-  };
+   handleEndDateChange(event) {
+     this.setState({
+       endDate: event.target.value
+     });
+   };
 
   handleCountModeChange(event) {
     this.setState({
@@ -100,7 +93,8 @@ class Chart extends React.Component {
     event.preventDefault();
     const url = 'http://localhost:8080/api/chart/makeChart?words=' + this.state.word +
       '&countMode=' + this.state.countMode + '&stemmerType=' + this.state.stemmerType +
-      '&countWordInDocument' + this.state.countWordInDocument;
+      '&countWordInDocument=' + this.state.countWordInDocument +
+      '&beginDate=' + this.state.beginDate + '&endDate=' + this.state.endDate;
 
     axios.get(url)
       .then(res => {
@@ -140,22 +134,20 @@ class Chart extends React.Component {
             <tr>
               <td><span className="chart-form-label">Начиная с:</span></td>
               <td>
-                <DatePicker
-                  selected={this.state.startDate}
-                  onChange={this.handleStartDateChange}
-                  dateFormat="yyyy-MM-dd"
-                  locale="ru"
+                <input
+                  type="date"
+                  value={this.state.beginDate}
+                  onChange={this.handleBeginDateChange}
                 />
               </td>
             </tr>
             <tr>
               <td><span className="chart-form-label">Заканчивая:</span></td>
               <td>
-                <DatePicker
-                  selected={this.state.endDate}
+                <input
+                  type="date"
+                  value={this.state.endDate}
                   onChange={this.handleEndDateChange}
-                  dateFormat="yyyy-MM-dd"
-                  locale="ru"
                 />
               </td>
             </tr>
