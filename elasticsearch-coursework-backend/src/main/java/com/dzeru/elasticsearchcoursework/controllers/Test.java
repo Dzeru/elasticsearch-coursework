@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 public class Test {
-
+/*
     @Autowired
     private HabrDocumentRepository habrDocumentRepository;
 
@@ -52,5 +52,5 @@ public class Test {
         }
         System.out.println("---");
         return d;
-    }
+    }*/
 }

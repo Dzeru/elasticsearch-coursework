@@ -3,11 +3,13 @@
     "properties": {
       "header": {
         "type": "text",
-        "analyzer": "habr_document_analyzer"
+        "analyzer": "habr_document_analyzer",
+        "term_vector": "with_positions"
       },
       "body": {
         "type": "text",
-        "analyzer": "habr_document_analyzer"
+        "analyzer": "habr_document_analyzer",
+        "term_vector": "with_positions"
       }
     }
   }

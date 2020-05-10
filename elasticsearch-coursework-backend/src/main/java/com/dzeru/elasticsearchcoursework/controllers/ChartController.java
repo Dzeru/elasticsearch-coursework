@@ -48,68 +48,17 @@ public class ChartController {
                               @RequestParam(value = "beginDate") String beginDate,
                               @RequestParam(value = "endDate") String endDate) {
         String[] wordList = words.split(",");
-
         List<WordCount> wordCounts = new ArrayList<>();
-        List<DataSetDto> dataSetDtos = new ArrayList<>();
 
         if(stemmerType.equalsIgnoreCase(Constants.PORTER)) {
-            for(String word : wordList) {
-                WordCount wordCount = new WordCount();
-                if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
-                    wordCount = habrWordPorterCounter.countDocumentContainsWord(
-                            word,
-                            habrDocumentRepository.findAll(),
-                            CountMode.valueOf(countMode));
-                }
-                if(Constants.HOW_MANY.equalsIgnoreCase(countWordInDocument)) {
-                    wordCount = habrWordPorterCounter.countDocumentHowManyWord(
-                            word,
-                            habrDocumentRepository.findAll(),
-                            CountMode.valueOf(countMode));
-                }
-
-                wordCounts.add(wordCount);
-            }
+            wordCounts = getWordCountPorter(wordList, countMode, countWordInDocument, beginDate, endDate);
         }
 
         if(stemmerType.equals(Constants.ELASTICSEARCH)) {
-            long beginPostTime = 0;
-            long endPostTime = 0;
-
-            try {
-                beginPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(beginDate).getTime();
-                endPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(endDate).getTime();
-            }
-            catch(ParseException e) {
-                e.printStackTrace();
-                return new ChartDto();
-            }
-
-            for(String word : wordList) {
-                WordCount wordCount = new WordCount();
-                List<HabrDocument> habrDocuments = getHabrDocumentsByCountMode(
-                        word,
-                        beginPostTime,
-                        endPostTime,
-                        countMode);
-
-                if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
-                    wordCount = habrWordElasticsearchCounter.countDocumentContainsWord(
-                            word,
-                            habrDocuments,
-                            CountMode.valueOf(countMode));
-                }
-                if(Constants.HOW_MANY.equalsIgnoreCase(countWordInDocument)) {
-                    wordCount = habrWordElasticsearchCounter.countDocumentHowManyWord(
-                            word,
-                            habrDocuments,
-                            CountMode.valueOf(countMode));
-                }
-
-                wordCounts.add(wordCount);
-            }
+            wordCounts = getWordCountElasticsearch(wordList, countMode, countWordInDocument, beginDate, endDate);
         }
 
+        List<DataSetDto> dataSetDtos = new ArrayList<>();
         Set<String> labels = new TreeSet<>();
 
         for(WordCount wordCount : wordCounts) {
@@ -124,12 +73,12 @@ public class ChartController {
                 data.add(counts.getOrDefault(label, 0L));
             }
             DataSetDto dataSetDto = new DataSetDto(wordCount.getWord(), data);
-            dataSetDto.setBorderColor(String.format(
-                    rgbaTemplate,
-                    (random.nextInt() % 255),
-                    (random.nextInt() % 255),
-                    (random.nextInt() % 255))
-            );
+
+            int r = generateColor();
+            int g = generateColor();
+            int b = generateColor();
+
+            dataSetDto.setBorderColor(String.format(rgbaTemplate, r, g, b));
             dataSetDtos.add(dataSetDto);
         }
 
@@ -137,6 +86,93 @@ public class ChartController {
         chartDto.setLabels(labels);
         chartDto.setDatasets(dataSetDtos);
         return chartDto;
+    }
+
+    private List<WordCount> getWordCountPorter(String[] wordList,
+                                               String countMode,
+                                               String countWordInDocument,
+                                               String beginDate,
+                                               String endDate) {
+        List<WordCount> wordCounts = new ArrayList<>();
+
+        long beginPostTime = 0;
+        long endPostTime = 0;
+
+        try {
+            beginPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(beginDate).getTime();
+            endPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(endDate).getTime();
+        }
+        catch(ParseException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
+        List<HabrDocument> habrDocuments = habrDocumentRepository.findByPostTime(beginPostTime, endPostTime);
+
+        for(String word : wordList) {
+            WordCount wordCount = new WordCount();
+            if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
+                wordCount = habrWordPorterCounter.countDocumentContainsWord(
+                        word,
+                        habrDocuments,
+                        CountMode.valueOf(countMode));
+            }
+            if(Constants.HOW_MANY.equalsIgnoreCase(countWordInDocument)) {
+                wordCount = habrWordPorterCounter.countDocumentHowManyWord(
+                        word,
+                        habrDocuments,
+                        CountMode.valueOf(countMode));
+            }
+
+            wordCounts.add(wordCount);
+        }
+        return wordCounts;
+    }
+
+    private List<WordCount> getWordCountElasticsearch(String[] wordList,
+                                                      String countMode,
+                                                      String countWordInDocument,
+                                                      String beginDate,
+                                                      String endDate) {
+        List<WordCount> wordCounts = new ArrayList<>();
+
+        long beginPostTime = 0;
+        long endPostTime = 0;
+
+        try {
+            beginPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(beginDate).getTime();
+            endPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(endDate).getTime();
+        }
+        catch(ParseException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
+        for(String word : wordList) {
+            WordCount wordCount = new WordCount();
+            List<HabrDocument> habrDocuments = getHabrDocumentsByCountMode(
+                    word,
+                    beginPostTime,
+                    endPostTime,
+                    countMode);
+
+            if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
+                wordCount = habrWordElasticsearchCounter.countDocumentContainsWord(
+                        word,
+                        habrDocuments,
+                        CountMode.valueOf(countMode));
+            }
+            if(Constants.HOW_MANY.equalsIgnoreCase(countWordInDocument)) {
+                wordCount = habrWordElasticsearchCounter.countDocumentHowManyWord(
+                        word,
+                        habrDocuments,
+                        CountMode.valueOf(countMode));
+            }
+
+            wordCounts.add(wordCount);
+        }
+
+        return wordCounts;
     }
 
     private List<HabrDocument> getHabrDocumentsByCountMode(String word,
@@ -164,5 +200,9 @@ public class ChartController {
                     endPostTime);
         }
         return habrDocuments;
+    }
+
+    private int generateColor() {
+        return random.nextInt() % 200;
     }
 }

@@ -7,7 +7,8 @@
     "filter": {
       "russian_stop": {
         "type": "stop",
-        "stopwords": "_russian_"
+        "stopwords": "_russian_",
+        "ignore_case": true
       },
       "russian_stemmer": {
         "type": "stemmer",
