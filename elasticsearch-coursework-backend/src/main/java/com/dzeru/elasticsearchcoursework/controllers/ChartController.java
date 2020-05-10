@@ -3,16 +3,20 @@ package com.dzeru.elasticsearchcoursework.controllers;
 import com.dzeru.elasticsearchcoursework.dto.ChartDto;
 import com.dzeru.elasticsearchcoursework.dto.DataSetDto;
 import com.dzeru.elasticsearchcoursework.dto.WordCount;
+import com.dzeru.elasticsearchcoursework.entities.HabrDocument;
 import com.dzeru.elasticsearchcoursework.repositories.HabrDocumentRepository;
+import com.dzeru.elasticsearchcoursework.services.impl.counters.HabrWordElasticsearchCounterImpl;
 import com.dzeru.elasticsearchcoursework.services.impl.counters.HabrWordPorterCounterImpl;
 import com.dzeru.elasticsearchcoursework.util.Constants;
 import com.dzeru.elasticsearchcoursework.util.CountMode;
+import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.*;
 
 @RestController
@@ -20,6 +24,7 @@ import java.util.*;
 public class ChartController {
 
     private final HabrWordPorterCounterImpl habrWordPorterCounter;
+    private final HabrWordElasticsearchCounterImpl habrWordElasticsearchCounter;
     private final HabrDocumentRepository habrDocumentRepository;
 
     private static final Random random = new Random();
@@ -27,18 +32,21 @@ public class ChartController {
 
     @Autowired
     public ChartController(HabrWordPorterCounterImpl habrWordPorterCounter,
+                           HabrWordElasticsearchCounterImpl habrWordElasticsearchCounter,
                            HabrDocumentRepository habrDocumentRepository) {
         this.habrWordPorterCounter = habrWordPorterCounter;
+        this.habrWordElasticsearchCounter = habrWordElasticsearchCounter;
         this.habrDocumentRepository = habrDocumentRepository;
     }
+
 
     @GetMapping("/makeChart")
     public ChartDto makeChart(@RequestParam("words") String words,
                               @RequestParam("countMode") String countMode,
                               @RequestParam(value = "stemmerType") String stemmerType,
                               @RequestParam("countWordInDocument") String countWordInDocument,
-                              @RequestParam(value = "beginDate", required = false) String beginDate,
-                              @RequestParam(value = "endDate", required = false) String endDate) {
+                              @RequestParam(value = "beginDate") String beginDate,
+                              @RequestParam(value = "endDate") String endDate) {
         String[] wordList = words.split(",");
 
         List<WordCount> wordCounts = new ArrayList<>();
@@ -63,26 +71,44 @@ public class ChartController {
                 wordCounts.add(wordCount);
             }
         }
+
         if(stemmerType.equals(Constants.ELASTICSEARCH)) {
+            long beginPostTime = 0;
+            long endPostTime = 0;
+
+            try {
+                beginPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(beginDate).getTime();
+                endPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(endDate).getTime();
+            }
+            catch(ParseException e) {
+                e.printStackTrace();
+                return new ChartDto();
+            }
+
             for(String word : wordList) {
                 WordCount wordCount = new WordCount();
+                List<HabrDocument> habrDocuments = getHabrDocumentsByCountMode(
+                        word,
+                        beginPostTime,
+                        endPostTime,
+                        countMode);
+
                 if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
-                    wordCount = habrWordCounter.countDocumentContainsWord(
+                    wordCount = habrWordElasticsearchCounter.countDocumentContainsWord(
                             word,
-                            habrDocumentRepository.findAll(),
+                            habrDocuments,
                             CountMode.valueOf(countMode));
                 }
                 if(Constants.HOW_MANY.equalsIgnoreCase(countWordInDocument)) {
-                    wordCount = habrWordCounter.countDocumentHowManyWord(
+                    wordCount = habrWordElasticsearchCounter.countDocumentHowManyWord(
                             word,
-                            habrDocumentRepository.findAll(),
+                            habrDocuments,
                             CountMode.valueOf(countMode));
                 }
 
                 wordCounts.add(wordCount);
             }
         }
-
 
         Set<String> labels = new TreeSet<>();
 
@@ -111,5 +137,32 @@ public class ChartController {
         chartDto.setLabels(labels);
         chartDto.setDatasets(dataSetDtos);
         return chartDto;
+    }
+
+    private List<HabrDocument> getHabrDocumentsByCountMode(String word,
+                                                           long beginPostTime,
+                                                           long endPostTime,
+                                                           String countMode) {
+        List<HabrDocument> habrDocuments = new ArrayList<>();
+
+        if(CountMode.valueOf(countMode).equals(CountMode.ALL)) {
+            habrDocuments = habrDocumentRepository.findByWordAndPostTimeCountModeAll(
+                    word,
+                    beginPostTime,
+                    endPostTime);
+        }
+        if(CountMode.valueOf(countMode).equals(CountMode.ONLY_BODY)) {
+            habrDocuments = habrDocumentRepository.findByWordAndPostTimeCountModeBody(
+                    word,
+                    beginPostTime,
+                    endPostTime);
+        }
+        if(CountMode.valueOf(countMode).equals(CountMode.ONLY_HEADER)) {
+            habrDocuments = habrDocumentRepository.findByWordAndPostTimeCountModeHeader(
+                    word,
+                    beginPostTime,
+                    endPostTime);
+        }
+        return habrDocuments;
     }
 }

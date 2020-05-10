@@ -35,5 +35,59 @@ public interface HabrDocumentRepository extends ElasticsearchRepository<HabrDocu
             "  }\n" +
             "}\n" +
             "}")
-    List<HabrDocument> findByWordAndDate(String word, Long beginDate, Long endDate);
+    List<HabrDocument> findByWordAndPostTimeCountModeAll(String word, Long beginDate, Long endDate);
+
+    @Query("{\n" +
+            "\"bool\": {\n" +
+            "  \"must\": {\n" +
+            "    \"multi_match\": {\n" +
+            "      \"query\":\"?0\",\n" +
+            "      \"fields\":[\"body\"]\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"filter\": {\n" +
+            "    \"range\": {\n" +
+            "      \"postTime\": {\n" +
+            "        \"gte\": ?1,\n" +
+            "        \"lte\": ?2\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n" +
+            "}")
+    List<HabrDocument> findByWordAndPostTimeCountModeBody(String word, Long beginDate, Long endDate);
+
+    @Query("{\n" +
+            "\"bool\": {\n" +
+            "  \"must\": {\n" +
+            "    \"multi_match\": {\n" +
+            "      \"query\":\"?0\",\n" +
+            "      \"fields\":[\"header\"]\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"filter\": {\n" +
+            "    \"range\": {\n" +
+            "      \"postTime\": {\n" +
+            "        \"gte\": ?1,\n" +
+            "        \"lte\": ?2\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n" +
+            "}")
+    List<HabrDocument> findByWordAndPostTimeCountModeHeader(String word, Long beginDate, Long endDate);
+
+    @Query("{\n" +
+            "\"bool\": {\n" +
+            "  \"filter\": {\n" +
+            "    \"range\": {\n" +
+            "      \"postTime\": {\n" +
+            "        \"gte\": ?1,\n" +
+            "        \"lte\": ?2\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n" +
+            "}")
+    List<HabrDocument> findByPostTime(Long beginDate, Long endDate);
 }
