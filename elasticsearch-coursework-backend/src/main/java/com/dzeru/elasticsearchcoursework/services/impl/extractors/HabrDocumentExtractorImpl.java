@@ -60,15 +60,6 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
                     String body = html.getElementById(BODY_ID).text();
                     String commentsCount = html.getElementById(COMMENTS_COUNT_ID).text();
 
-                    System.out.println("--------");
-                    System.out.println(htmlCleanerPipeline.process(header));
-                    System.out.println(russianStemmerPipeline.process(header));
-                    System.out.println(htmlCleanerPipeline.process(body));
-                    System.out.println(russianStemmerPipeline.process(body));
-                    System.out.println(commentsCount);
-                    System.out.println(DateFormats.CUSTOM_DATE_FORMAT.parse(postTime));
-                    System.out.println("--------");
-
                     habrDocumentRepository.save(new HabrDocument(
                             postId,
                             htmlCleanerPipeline.process(header),
@@ -82,7 +73,7 @@ public class HabrDocumentExtractorImpl implements DocumentExtractor {
                 }
             }
             catch(Exception e) {
-
+                e.printStackTrace();
             }
         }
         return downloadCounter;
