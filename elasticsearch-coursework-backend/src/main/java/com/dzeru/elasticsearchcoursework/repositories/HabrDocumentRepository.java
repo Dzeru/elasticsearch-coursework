@@ -82,8 +82,8 @@ public interface HabrDocumentRepository extends ElasticsearchRepository<HabrDocu
             "  \"filter\": {\n" +
             "    \"range\": {\n" +
             "      \"postTime\": {\n" +
-            "        \"gte\": ?1,\n" +
-            "        \"lte\": ?2\n" +
+            "        \"gte\": ?0,\n" +
+            "        \"lte\": ?1\n" +
             "      }\n" +
             "    }\n" +
             "  }\n" +
