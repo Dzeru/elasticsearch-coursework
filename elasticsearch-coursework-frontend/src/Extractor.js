@@ -8,23 +8,11 @@ class Extractor extends React.Component {
     super(props);
 
     this.state = {
-      habrIds: '',
-      vkAuthorName: '',
-      vkAuthorUrl: '',
-      vkAuthorId: '',
-      vkAuId: '',
-      vkPostIds: ''
+      habrIds: ''
     }
 
     this.handleSubmitHabr = this.handleSubmitHabr.bind(this);
     this.handleChangeHabr = this.handleChangeHabr.bind(this);
-    this.handleSubmitVkAuthor = this.handleSubmitVkAuthor.bind(this);
-    this.handleChangeVkAuthorName = this.handleChangeVkAuthorName.bind(this);
-    this.handleChangeVkAuthorUrl = this.handleChangeVkAuthorUrl.bind(this);
-    this.handleChangeVkAuthorId = this.handleChangeVkAuthorId.bind(this);
-    this.handleSubmitVk = this.handleSubmitVk.bind(this);
-    this.handleChangeVkPostIds = this.handleChangeVkPostIds.bind(this);
-    this.handleChangeVkAuId = this.handleChangeVkAuId.bind(this);
   };
 
   handleChangeHabr(event) {
@@ -34,48 +22,6 @@ class Extractor extends React.Component {
   handleSubmitHabr(event) {
     event.preventDefault();
     const url = 'http://localhost:8080/api/extract/habr?' + 'postIds=' + this.state.habrIds;
-
-    axios.get(url)
-      .then(res => {
-        alert('Обработано документов: ' + res.data + '\nНекоторые документы могли быть недоступны или удалены.');
-      })
-  }
-
-  handleChangeVkAuthorName(event) {
-    this.setState({vkAuthorName: event.target.value})
-  }
-
-  handleChangeVkAuthorUrl(event) {
-    this.setState({vkAuthorUrl: event.target.value})
-  }
-
-  handleChangeVkAuthorId(event) {
-    this.setState({vkAuthorId: event.target.value})
-  }
-
-  handleSubmitVkAuthor(event) {
-    event.preventDefault();
-    const url = 'http://localhost:8080/api/extract/vk/author?' + 'name=' + this.state.vkAuthorName +
-    '&url=' + this.state.vkAuthorUrl + "&authorId=" + this.state.vkAuthorId;
-
-    axios.get(url)
-      .then(res => {
-        alert(res.data);
-      })
-  }
-
-  handleChangeVkPostIds(event) {
-    this.setState({vkPostIds: event.target.value})
-  }
-
-  handleChangeVkAuId(event) {
-    this.setState({vkAuId: event.target.value})
-  }
-
-  handleSubmitVk(event) {
-    event.preventDefault();
-    const url = 'http://localhost:8080/api/extract/vk?' + 'postIds=' + this.state.vkPostIds
-    + "&authorId=" + this.state.vkAuId;
 
     axios.get(url)
       .then(res => {
