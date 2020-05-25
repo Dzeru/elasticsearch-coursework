@@ -11,6 +11,8 @@ import com.dzeru.elasticsearchcoursework.util.Constants;
 import com.dzeru.elasticsearchcoursework.util.CountMode;
 import com.dzeru.elasticsearchcoursework.util.DateFormats;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +30,8 @@ public class ChartController {
     private final HabrDocumentRepository habrDocumentRepository;
 
     private static final Random random = new Random();
+    private static final Pageable pageable = PageRequest.of(0, 1000);
+
     private static String rgbaTemplate = "rgba(%d,%d,%d,1)";
 
     @Autowired
@@ -99,15 +103,19 @@ public class ChartController {
         long endPostTime = 0;
 
         try {
-            beginPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(beginDate).getTime();
-            endPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(endDate).getTime();
+            beginPostTime = getLongDate(beginDate);
+            endPostTime = getLongDate(endDate);
         }
         catch(ParseException e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
 
-        List<HabrDocument> habrDocuments = habrDocumentRepository.findByPostTime(beginPostTime, endPostTime);
+        List<HabrDocument> habrDocuments = habrDocumentRepository.findByPostTimeBetween(
+                beginPostTime,
+                endPostTime,
+                pageable
+        );
 
         for(String word : wordList) {
             WordCount wordCount = new WordCount();
@@ -140,8 +148,8 @@ public class ChartController {
         long endPostTime = 0;
 
         try {
-            beginPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(beginDate).getTime();
-            endPostTime = DateFormats.CUSTOM_DATE_FORMAT.parse(endDate).getTime();
+            beginPostTime = getLongDate(beginDate);
+            endPostTime = getLongDate(endDate);
         }
         catch(ParseException e) {
             e.printStackTrace();
@@ -154,7 +162,8 @@ public class ChartController {
                     word,
                     beginPostTime,
                     endPostTime,
-                    countMode);
+                    countMode
+            );
 
             if(Constants.CONTAINS.equalsIgnoreCase(countWordInDocument)) {
                 wordCount = habrWordElasticsearchCounter.countDocumentContainsWord(
@@ -185,24 +194,34 @@ public class ChartController {
             habrDocuments = habrDocumentRepository.findByWordAndPostTimeCountModeAll(
                     word,
                     beginPostTime,
-                    endPostTime);
+                    endPostTime,
+                    pageable
+            );
         }
         if(CountMode.valueOf(countMode).equals(CountMode.ONLY_BODY)) {
             habrDocuments = habrDocumentRepository.findByWordAndPostTimeCountModeBody(
                     word,
                     beginPostTime,
-                    endPostTime);
+                    endPostTime,
+                    pageable
+            );
         }
         if(CountMode.valueOf(countMode).equals(CountMode.ONLY_HEADER)) {
             habrDocuments = habrDocumentRepository.findByWordAndPostTimeCountModeHeader(
                     word,
                     beginPostTime,
-                    endPostTime);
+                    endPostTime,
+                    pageable
+            );
         }
         return habrDocuments;
     }
 
     private int generateColor() {
         return random.nextInt() % 200;
+    }
+
+    private long getLongDate(String date) throws ParseException {
+        return DateFormats.CUSTOM_DATE_FORMAT.parse(date).getTime();
     }
 }
