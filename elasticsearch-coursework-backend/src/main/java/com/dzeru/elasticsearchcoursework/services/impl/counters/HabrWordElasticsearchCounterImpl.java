@@ -10,6 +10,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.core.TermVectorsRequest;
 import org.elasticsearch.client.core.TermVectorsResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class HabrWordElasticsearchCounterImpl implements WordCounter {
 
     private final RestHighLevelClient client;
 
+    @Autowired
     public HabrWordElasticsearchCounterImpl(RestHighLevelClient client) {
         this.client = client;
     }
