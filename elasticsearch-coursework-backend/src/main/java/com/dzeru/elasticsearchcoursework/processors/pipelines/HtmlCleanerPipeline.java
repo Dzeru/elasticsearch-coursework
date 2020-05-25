@@ -21,6 +21,8 @@ public class HtmlCleanerPipeline implements StringProcessor {
 
     @Override
     public String process(String string) {
-        return htmlCleanerProcessor.process(string);
+        return whitespaceProcessor.process(
+                htmlCleanerProcessor.process(string)
+        );
     }
 }
